@@ -44,7 +44,7 @@ public final class Botany extends JavaPlugin {
 			this.radius = r;
 		}
 	}
-	
+
 	// contains our biome - plant probability matrix
 	private static Map<Biome, List<plantMatrix>> matrix = new HashMap<Biome, List<plantMatrix>>();
 	// used to fill our plant prob. matrix at startup
@@ -181,10 +181,12 @@ public final class Botany extends JavaPlugin {
 				}
 			}
 
-			if ((count / (pm.radius * pm.radius)) < pm.density) {
+			
+			if (((double)count / (pm.radius * pm.radius)) < pm.density) {
 				// plant the thing
 				b.setType(pm.target_type);
 				b.setData(pm.target_data);
+				getLogger().info("count " + count + " density " + ((double)count / (pm.radius * pm.radius)));
 				getLogger().info("In a " + b.getBiome().toString() + " biome, planted a " + pm.target_type.toString() + ":" + pm.target_data + " at " + b.getX() + "," + b.getY() + "," + b.getZ());
 				return;
 			}
