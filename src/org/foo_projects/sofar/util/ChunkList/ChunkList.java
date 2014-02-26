@@ -1,0 +1,122 @@
+package org.foo_projects.sofar.util.ChunkList;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
+import org.bukkit.event.world.ChunkLoadEvent;
+import org.bukkit.event.world.ChunkUnloadEvent;
+import org.bukkit.plugin.Plugin;
+
+public class ChunkList {
+	private List<World> worldList;
+	private Map<String, Boolean> chunkMap;
+	private Plugin plugin;
+	private Listener listener;
+
+	public ChunkList(Plugin plugin) {
+		this.chunkMap = new HashMap<String, Boolean>();
+		this.worldList = new ArrayList<World>();
+		this.plugin = plugin;
+	}
+	
+	private void load(Chunk c) {
+		if (!worldList.contains(c.getWorld()))
+			return;
+		String key = "(" + c.getWorld().getName() + ":" + c.getX() + "," + c.getZ() + ")";
+		chunkMap.put(key,  true);
+	}
+	
+	private void unload(Chunk c) {
+		if (!worldList.contains(c.getWorld()))
+			return;
+		String key = "(" + c.getWorld().getName() + ":" + c.getX() + "," + c.getZ() + ")";
+		if (chunkMap.containsKey(key))
+			chunkMap.remove(key);
+	}
+	
+	private void unloadAll(World w) {
+		String key = "(" + w.getName() + ":";
+		for (String k: chunkMap.keySet()) {
+			if (k.startsWith(key))
+				chunkMap.remove(k);
+		}
+	}
+	
+	public boolean enableWorld(World w) {
+		if (worldList.contains(w))
+			return false;
+		
+		if (worldList.isEmpty()) {
+			this.listener = new ChunkListener();
+			Bukkit.getServer().getPluginManager().registerEvents(listener, plugin);
+		}
+
+		if (worldList.add(w)) {
+			Chunk chunkList[] = w.getLoadedChunks();
+			for (Chunk c: chunkList)
+				this.load(c);
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean disableWorld(World w) {
+		worldList.remove(w);
+
+		if (worldList.isEmpty()) {
+			HandlerList.unregisterAll(listener);
+			this.listener = null;
+		}
+
+		unloadAll(w);
+
+		return true;
+	}
+	
+	public Boolean isEnabled(World w) {
+		return worldList.contains(w);
+	}
+
+	public List<World> listWorlds() {
+		return worldList;
+	}
+	
+	public Boolean isLoaded(Chunk c) {
+		String key = "(" + c.getWorld().getName() + ":" + c.getX() + "," + c.getZ() + ")";
+		return chunkMap.containsKey(key);
+	}
+	
+	public Boolean isLoaded(Location l) {
+		return isLoaded(l.getChunk());
+	}
+	
+	public Chunk getRandom(World w) {
+		if (!isEnabled(w))
+			return null;
+		
+		Random rnd = new Random();
+		return w.getLoadedChunks()[rnd.nextInt(w.getLoadedChunks().length)];
+	}
+	
+	private class ChunkListener implements Listener {
+		@EventHandler
+		public void onChunkLoadEvent(ChunkLoadEvent event) {
+			load(event.getChunk());
+		}
+
+		@EventHandler
+		public void onChunkUnloadEvent(ChunkUnloadEvent event) {
+			unload(event.getChunk());
+		}
+	}
+}
