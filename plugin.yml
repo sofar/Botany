@@ -1,3 +1,14 @@
 name: Botany
 main: org.foo_projects.sofar.Botany.Botany
 version: 0
+commands:
+    botany:
+        aliases: bot
+        description: perform various operations
+        usage: /botany ...
+        permission: botany
+        permission-message: You do not have sufficient privileges to do that!
+permissions:
+    botany:
+        description: Gives access to the botany command
+        default: op
