@@ -28,14 +28,14 @@ public class ChunkList {
 		this.worldList = new ArrayList<World>();
 		this.plugin = plugin;
 	}
-	
+
 	private void load(Chunk c) {
 		if (!worldList.contains(c.getWorld()))
 			return;
 		String key = "(" + c.getWorld().getName() + ":" + c.getX() + "," + c.getZ() + ")";
 		chunkMap.put(key,  true);
 	}
-	
+
 	private void unload(Chunk c) {
 		if (!worldList.contains(c.getWorld()))
 			return;
@@ -43,7 +43,7 @@ public class ChunkList {
 		if (chunkMap.containsKey(key))
 			chunkMap.remove(key);
 	}
-	
+
 	private void unloadAll(World w) {
 		String key = "(" + w.getName() + ":";
 		for (String k: chunkMap.keySet()) {
@@ -51,7 +51,7 @@ public class ChunkList {
 				chunkMap.remove(k);
 		}
 	}
-	
+
 	public boolean enableWorld(World w) {
 		if (worldList.contains(w))
 			return false;
@@ -69,7 +69,14 @@ public class ChunkList {
 		}
 		return false;
 	}
-	
+
+	public boolean enableWorld(String s) {
+		World w = Bukkit.getWorld(s);
+		if (w == null)
+			return false;
+		return enableWorld(w);
+	}
+
 	public boolean disableWorld(World w) {
 		worldList.remove(w);
 
@@ -82,7 +89,14 @@ public class ChunkList {
 
 		return true;
 	}
-	
+
+	public boolean disableWorld(String s) {
+		World w  = Bukkit.getWorld(s);
+		if (w == null)
+			return false;
+		return disableWorld(w);
+	}
+
 	public Boolean isEnabled(World w) {
 		return worldList.contains(w);
 	}
@@ -90,24 +104,24 @@ public class ChunkList {
 	public List<World> listWorlds() {
 		return worldList;
 	}
-	
+
 	public Boolean isLoaded(Chunk c) {
 		String key = "(" + c.getWorld().getName() + ":" + c.getX() + "," + c.getZ() + ")";
 		return chunkMap.containsKey(key);
 	}
-	
+
 	public Boolean isLoaded(Location l) {
 		return isLoaded(l.getChunk());
 	}
-	
+
 	public Chunk getRandom(World w) {
 		if (!isEnabled(w))
 			return null;
-		
+
 		Random rnd = new Random();
 		return w.getLoadedChunks()[rnd.nextInt(w.getLoadedChunks().length)];
 	}
-	
+
 	private class ChunkListener implements Listener {
 		@EventHandler
 		public void onChunkLoadEvent(ChunkLoadEvent event) {
