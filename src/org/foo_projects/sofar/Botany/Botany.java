@@ -23,7 +23,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.foo_projects.sofar.util.ChunkList.ChunkList;
 
 public final class Botany extends JavaPlugin {
-	private long conf_blocks = 10;
+	private long conf_blocks = 1;
 	private int conf_ticks = 1;
 	private ChunkList chunkList;
 
@@ -383,10 +383,12 @@ command:
 
 		mapadd(Biome.SAVANNA, Material.LONG_GRASS,    (byte)1, Material.GRASS, (byte)0, Material.LONG_GRASS,    (byte)1, 0.6,     8);
 		mapadd(Biome.SAVANNA, Material.SAPLING,       (byte)4, Material.GRASS, (byte)0, Material.LEAVES_2,      (byte)0, 0.1,    32);
+		mapadd(Biome.SAVANNA, Material.DOUBLE_PLANT,  (byte)2, Material.GRASS, (byte)0, Material.DOUBLE_PLANT,  (byte)2, 0.01,   16);
 
 		mapadd(Biome.PLAINS,  Material.LONG_GRASS,    (byte)1, Material.GRASS, (byte)0, Material.LONG_GRASS,    (byte)1, 0.3,     8);
 		mapadd(Biome.PLAINS,  Material.YELLOW_FLOWER, (byte)0, Material.GRASS, (byte)0, Material.YELLOW_FLOWER, (byte)0, 0.01,   16);
 		mapadd(Biome.PLAINS,  Material.RED_ROSE,      (byte)0, Material.GRASS, (byte)0, Material.RED_ROSE,      (byte)0, 0.01,   16);
+		mapadd(Biome.PLAINS,  Material.DOUBLE_PLANT,  (byte)2, Material.GRASS, (byte)0, Material.DOUBLE_PLANT,  (byte)2, 0.01,   16);
 
 		mapadd(Biome.DESERT,  Material.CACTUS,        (byte)0, Material.SAND,  (byte)0, Material.CACTUS,        (byte)0, 0.0004, 32);
 		mapadd(Biome.DESERT,  Material.LONG_GRASS,    (byte)0, Material.SAND,  (byte)0, Material.LONG_GRASS,    (byte)0, 0.0004, 32);
