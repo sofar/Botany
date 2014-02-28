@@ -2,6 +2,7 @@ package org.foo_projects.sofar.util.ChunkList;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -46,16 +47,18 @@ public class ChunkList {
 
 	private void unloadAll(World w) {
 		String key = "(" + w.getName() + ":";
-		for (String k: chunkMap.keySet()) {
-			if (k.startsWith(key))
-				chunkMap.remove(k);
+		Iterator<String> i = chunkMap.keySet().iterator();
+		while (i.hasNext()) {
+			String entry = i.next();
+			if (entry.startsWith(key))
+				i.remove();
 		}
 	}
 
 	public boolean enableWorld(World w) {
 		if (worldList.contains(w))
 			return false;
-		
+
 		if (worldList.isEmpty()) {
 			this.listener = new ChunkListener();
 			Bukkit.getServer().getPluginManager().registerEvents(listener, plugin);
@@ -102,7 +105,13 @@ public class ChunkList {
 	}
 
 	public List<World> listWorlds() {
+		if (worldList.isEmpty())
+			return null;
 		return worldList;
+	}
+
+	public boolean isEmpty() {
+		return worldList.isEmpty();
 	}
 
 	public Boolean isLoaded(Chunk c) {

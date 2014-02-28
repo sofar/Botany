@@ -23,8 +23,8 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.foo_projects.sofar.util.ChunkList.ChunkList;
 
 public final class Botany extends JavaPlugin {
-	private int conf_ticks = 20;
-	private long conf_blocks = 100;
+	private long conf_blocks = 10;
+	private int conf_ticks = 1;
 	private ChunkList chunkList;
 
 	// main plant grow probability matrix - hashed over biome
@@ -230,6 +230,8 @@ public final class Botany extends JavaPlugin {
 	private class BotanyRunnable implements Runnable {
 		@Override
 		public void run() {
+			if (chunkList.isEmpty())
+				return;
 			for (World w: chunkList.listWorlds()) {
 				for (int j = 0; j < conf_blocks; j++) {
 					Chunk c = chunkList.getRandom(w);
@@ -300,28 +302,44 @@ command:
 							msg = "enable requires a world name";
 							break;
 						};
-						if (!chunkList.enableWorld(split[1]))
+						if (!chunkList.enableWorld(split[1])) {
 							msg = "unable to enable for world \"" + split[1] + "\"";
-						else
+						} else {
 							msg = "enabled for world \"" + split[1] + "\"";
+							List<String> worldStringList = getConfig().getStringList("worlds");
+							if (worldStringList.indexOf(split[1]) == -1) {
+								worldStringList.add(split[1]);
+								getConfig().set("worlds", worldStringList);
+								saveConfig();
+							}
+						}
 						break;
 					case "disable":
 						if (split.length != 2) {
 							msg = "disable requires a world name";
 							break;
 						};
-						if (!chunkList.disableWorld(split[1]))
+						if (!chunkList.disableWorld(split[1])) {
 							msg = "unable to disable for world \"" + split[1] + "\"";
-						else
+						} else {
 							msg = "disabled for world \"" + split[1] + "\"";
+							List<String> worldStringList = getConfig().getStringList("worlds");
+							worldStringList.remove(split[1]);
+							getConfig().set("worlds", worldStringList);
+							saveConfig();
+						}
 						break;
 					case "list":
 						msg = "plugin enabled for worlds:\n";
+						if (chunkList.isEmpty()) {
+							msg = "Not enabled for any worlds\n";
+							break;
+						}
 						for (World w: chunkList.listWorlds())
 							msg += "- " + w.getName() + "\n";
 						break;
 					case "stats":
-							msg = "No stats are currently being recorded.\n";
+						msg = "No stats are currently being recorded.\n";
 						break;
 					case "help":
 					default:
@@ -343,10 +361,22 @@ command:
 	}
 
 	public void onEnable() {
+		// config data handling
+		saveDefaultConfig();
+
 		// setup
 		this.chunkList = new ChunkList(this);
-		// test - "world" only for now
-		chunkList.enableWorld(Bukkit.getWorld("world"));
+
+		conf_blocks = getConfig().getInt("blocks");
+		conf_ticks = getConfig().getInt("ticks");
+
+		getLogger().info("blocks: " + conf_blocks + " ticks: " + conf_ticks);
+
+		List<String> worldStringList = getConfig().getStringList("worlds");
+
+		/* populate chunk cache for each world */
+		for (int i = 0; i < worldStringList.size(); i++)
+			chunkList.enableWorld(worldStringList.get(i));
 
 		// long array of plants for each biome
 		mapadd(Biome.BEACH,   Material.LONG_GRASS,    (byte)1, Material.GRASS, (byte)0, Material.LONG_GRASS,    (byte)1, 0.01,   16);
@@ -354,7 +384,7 @@ command:
 		mapadd(Biome.SAVANNA, Material.LONG_GRASS,    (byte)1, Material.GRASS, (byte)0, Material.LONG_GRASS,    (byte)1, 0.6,     8);
 		mapadd(Biome.SAVANNA, Material.SAPLING,       (byte)4, Material.GRASS, (byte)0, Material.LEAVES_2,      (byte)0, 0.1,    32);
 
-		mapadd(Biome.PLAINS,  Material.LONG_GRASS,    (byte)1, Material.GRASS, (byte)0, Material.LONG_GRASS,    (byte)1, 0.6,     8);
+		mapadd(Biome.PLAINS,  Material.LONG_GRASS,    (byte)1, Material.GRASS, (byte)0, Material.LONG_GRASS,    (byte)1, 0.3,     8);
 		mapadd(Biome.PLAINS,  Material.YELLOW_FLOWER, (byte)0, Material.GRASS, (byte)0, Material.YELLOW_FLOWER, (byte)0, 0.01,   16);
 		mapadd(Biome.PLAINS,  Material.RED_ROSE,      (byte)0, Material.GRASS, (byte)0, Material.RED_ROSE,      (byte)0, 0.01,   16);
 
