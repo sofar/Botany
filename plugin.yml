@@ -1,6 +1,6 @@
 name: Botany
 main: org.foo_projects.sofar.Botany.Botany
-version: 1
+version: 2
 commands:
     botany:
         aliases: bot

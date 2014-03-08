@@ -220,8 +220,6 @@ public final class Botany extends JavaPlugin {
 				// plant the thing
 				b.setType(pm.target_type);
 				b.setData(pm.target_data);
-				getLogger().info("count " + count + " density " + ((double)count / (pm.radius * pm.radius)));
-				getLogger().info("In a " + b.getBiome().toString() + " biome, planted a " + pm.target_type.toString() + ":" + pm.target_data + " at " + b.getX() + "," + b.getY() + "," + b.getZ());
 				return;
 			}
 		}
@@ -383,12 +381,12 @@ command:
 
 		mapadd(Biome.SAVANNA, Material.LONG_GRASS,    (byte)1, Material.GRASS, (byte)0, Material.LONG_GRASS,    (byte)1, 0.6,     8);
 		mapadd(Biome.SAVANNA, Material.SAPLING,       (byte)4, Material.GRASS, (byte)0, Material.LEAVES_2,      (byte)0, 0.1,    32);
-		mapadd(Biome.SAVANNA, Material.DOUBLE_PLANT,  (byte)2, Material.GRASS, (byte)0, Material.DOUBLE_PLANT,  (byte)2, 0.01,   16);
+		// mapadd(Biome.SAVANNA, Material.DOUBLE_PLANT,  (byte)2, Material.GRASS, (byte)0, Material.DOUBLE_PLANT,  (byte)2, 0.01,   16);
 
 		mapadd(Biome.PLAINS,  Material.LONG_GRASS,    (byte)1, Material.GRASS, (byte)0, Material.LONG_GRASS,    (byte)1, 0.3,     8);
 		mapadd(Biome.PLAINS,  Material.YELLOW_FLOWER, (byte)0, Material.GRASS, (byte)0, Material.YELLOW_FLOWER, (byte)0, 0.01,   16);
 		mapadd(Biome.PLAINS,  Material.RED_ROSE,      (byte)0, Material.GRASS, (byte)0, Material.RED_ROSE,      (byte)0, 0.01,   16);
-		mapadd(Biome.PLAINS,  Material.DOUBLE_PLANT,  (byte)2, Material.GRASS, (byte)0, Material.DOUBLE_PLANT,  (byte)2, 0.01,   16);
+		// mapadd(Biome.PLAINS,  Material.DOUBLE_PLANT,  (byte)2, Material.GRASS, (byte)0, Material.DOUBLE_PLANT,  (byte)2, 0.01,   16);
 
 		mapadd(Biome.DESERT,  Material.CACTUS,        (byte)0, Material.SAND,  (byte)0, Material.CACTUS,        (byte)0, 0.0004, 32);
 		mapadd(Biome.DESERT,  Material.LONG_GRASS,    (byte)0, Material.SAND,  (byte)0, Material.LONG_GRASS,    (byte)0, 0.0004, 32);
