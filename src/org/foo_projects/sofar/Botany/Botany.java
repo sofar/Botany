@@ -25,6 +25,12 @@ import org.foo_projects.sofar.util.ChunkList.ChunkList;
 public final class Botany extends JavaPlugin {
 	private long conf_blocks = 1;
 	private int conf_ticks = 1;
+
+	private boolean conf_saplings = true;
+	private boolean conf_cacti = true;
+
+	private Map<Material, Long> stat_planted = new HashMap<Material, Long>();
+
 	private ChunkList chunkList;
 
 	// main plant grow probability matrix - hashed over biome
@@ -196,6 +202,12 @@ public final class Botany extends JavaPlugin {
 		for (plantMatrix pm: pml) {
 			int count = 0;
 
+			// are these plant types enabled?
+			if (pm.target_type == Material.SAPLING && (!conf_saplings))
+				continue;
+			if (pm.target_type == Material.CACTUS && (!conf_cacti))
+				continue;
+
 			Block base = b.getRelative(BlockFace.DOWN);
 
 			// check if base is OK for this material
@@ -220,6 +232,17 @@ public final class Botany extends JavaPlugin {
 				// plant the thing
 				b.setType(pm.target_type);
 				b.setData(pm.target_data);
+				if (pm.target_type == Material.DOUBLE_PLANT) {
+					Block tb = b.getRelative(BlockFace.UP);
+					tb.setType(Material.DOUBLE_PLANT);
+					tb.setData((byte)11);
+				}
+
+				if (stat_planted.get(pm.target_type) == null)
+					stat_planted.put(pm.target_type, (long)1);
+				else
+					stat_planted.put(pm.target_type, stat_planted.get(pm.target_type) + 1);
+
 				return;
 			}
 		}
@@ -337,7 +360,9 @@ command:
 							msg += "- " + w.getName() + "\n";
 						break;
 					case "stats":
-						msg = "No stats are currently being recorded.\n";
+						msg = "Planting statistics:\n";
+						for (Material m: stat_planted.keySet())
+							msg += m.toString() + " - " + stat_planted.get(m) + "\n";
 						break;
 					case "help":
 					default:
@@ -368,6 +393,9 @@ command:
 		conf_blocks = getConfig().getInt("blocks");
 		conf_ticks = getConfig().getInt("ticks");
 
+		conf_saplings = getConfig().getBoolean("saplings");
+		conf_cacti = getConfig().getBoolean("cacti");
+
 		getLogger().info("blocks: " + conf_blocks + " ticks: " + conf_ticks);
 
 		List<String> worldStringList = getConfig().getStringList("worlds");
@@ -381,12 +409,12 @@ command:
 
 		mapadd(Biome.SAVANNA, Material.LONG_GRASS,    (byte)1, Material.GRASS, (byte)0, Material.LONG_GRASS,    (byte)1, 0.6,     8);
 		mapadd(Biome.SAVANNA, Material.SAPLING,       (byte)4, Material.GRASS, (byte)0, Material.LEAVES_2,      (byte)0, 0.1,    32);
-		// mapadd(Biome.SAVANNA, Material.DOUBLE_PLANT,  (byte)2, Material.GRASS, (byte)0, Material.DOUBLE_PLANT,  (byte)2, 0.01,   16);
+		mapadd(Biome.SAVANNA, Material.DOUBLE_PLANT,  (byte)2, Material.GRASS, (byte)0, Material.DOUBLE_PLANT,  (byte)2, 0.01,   16);
 
 		mapadd(Biome.PLAINS,  Material.LONG_GRASS,    (byte)1, Material.GRASS, (byte)0, Material.LONG_GRASS,    (byte)1, 0.3,     8);
 		mapadd(Biome.PLAINS,  Material.YELLOW_FLOWER, (byte)0, Material.GRASS, (byte)0, Material.YELLOW_FLOWER, (byte)0, 0.01,   16);
 		mapadd(Biome.PLAINS,  Material.RED_ROSE,      (byte)0, Material.GRASS, (byte)0, Material.RED_ROSE,      (byte)0, 0.01,   16);
-		// mapadd(Biome.PLAINS,  Material.DOUBLE_PLANT,  (byte)2, Material.GRASS, (byte)0, Material.DOUBLE_PLANT,  (byte)2, 0.01,   16);
+		mapadd(Biome.PLAINS,  Material.DOUBLE_PLANT,  (byte)2, Material.GRASS, (byte)0, Material.DOUBLE_PLANT,  (byte)2, 0.01,   16);
 
 		mapadd(Biome.DESERT,  Material.CACTUS,        (byte)0, Material.SAND,  (byte)0, Material.CACTUS,        (byte)0, 0.0004, 32);
 		mapadd(Biome.DESERT,  Material.LONG_GRASS,    (byte)0, Material.SAND,  (byte)0, Material.LONG_GRASS,    (byte)0, 0.0004, 32);
