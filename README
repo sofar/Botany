@@ -1,0 +1,23 @@
+
+Botany - a natural plant regrowth plugin for bukkit
+======
+
+The aim of this plugin is to provide a consistent and persistent
+vegetation to bukkit worlds. Consistent means that for each biome
+the player can expect the vegetation to be of certain types and
+densities. Persistent means that if plants are removed from an area
+that they grow back over time, creating the appearance of an active
+vegetation.
+
+The plugin picks a random spot and determines whether that spot
+is a candidate for planting by checking plant densities around that
+location.  If there are plants appropriate for the biome on that spot,
+and the current density is lower than a threshold value for a plant,
+that plant type is planted at the location.
+
+We collect and analyze plant data from generated default worlds, and
+determine base plant levels for each biome. This data is converted into
+a plant-density-biome matrix that is implemented in the code itself.
+
+Data sample sets are collected in the data/ folder in the source code,
+and contain biome,plant_type,density_average values line-by-line
