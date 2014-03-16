@@ -16,6 +16,12 @@
 # as flower density is generally low and hard to _not_ over-
 # crowd fields with them.
 
+# some plants are also missing:
+
+# SUGAR_CANE
+# VINE
+# LILY_PAD
+
 SWAMPLAND,LEAVES:0,0.119161290322581
 SWAMPLAND,LONG_GRASS:1,0.0606912442396313
 
