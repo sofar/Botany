@@ -59,17 +59,15 @@ public final class Botany extends JavaPlugin {
 		public Material target_type;
 		public byte     target_data;
 		public Material base_type;
-		public byte     base_data;
 		public Material scan_type;
 		public byte     scan_data;
 		public double   density;
 		public long     radius;
 
-		public plantMatrix(Material tt, byte td, Material bt, byte bd, Material st, byte sd, double d, long r) {
+		public plantMatrix(Material tt, byte td, Material bt, Material st, byte sd, double d, long r) {
 			target_type = tt;
 			target_data = td;
 			base_type = bt;
-			base_data = bd;
 			scan_type = st;
 			scan_data = sd;
 			density = d;
@@ -83,7 +81,6 @@ public final class Botany extends JavaPlugin {
 			target_type = Material.valueOf((String)map.get("target_type"));
 			target_data = (byte)map.get("target_data");
 			base_type = Material.valueOf((String)map.get("base_type"));
-			base_data = (byte)map.get("base_data");
 			scan_type = Material.valueOf((String)map.get("scan_type"));
 			scan_data = (byte)map.get("scan_data");
 			density = Double.parseDouble((String)map.get("density"));
@@ -96,7 +93,6 @@ public final class Botany extends JavaPlugin {
 			map.put("target_type", target_type.toString());
 			map.put("Target_data", target_data);
 			map.put("base_type", base_type.toString());
-			map.put("base_data", base_data);
 			map.put("scan_type", scan_type.toString());
 			map.put("scan_data", scan_data);
 			map.put("density", String.format("%.3f", density));
@@ -110,7 +106,7 @@ public final class Botany extends JavaPlugin {
 	private static Map<Biome, List<plantMatrix>> matrix = new HashMap<Biome, List<plantMatrix>>();
 	// used to fill our plant prob. matrix at startup
 
-	private void mapadd(Biome biome, Material tt, byte td, Material bt, byte bd, Material st, byte sd, double d) {
+	private void mapadd(Biome biome, Material tt, byte td, Material bt, Material st, byte sd, double d) {
 		List<plantMatrix> pml;
 		/*
 		 * q this can likely be optimized more, since now we scan from -r to +r, which ends up
@@ -118,7 +114,7 @@ public final class Botany extends JavaPlugin {
 		 */
 		long r = (long)Math.sqrt(0.5 / d);
 
-		plantMatrix pm = new plantMatrix(tt, td, bt, bd, st, sd, d, r);
+		plantMatrix pm = new plantMatrix(tt, td, bt, st, sd, d, r);
 
 		if (matrix.containsKey(biome)) {
 			pml = matrix.get(biome);
@@ -302,7 +298,7 @@ public final class Botany extends JavaPlugin {
 			Block base = b.getRelative(BlockFace.DOWN);
 
 			// check if base is OK for this material
-			if ((base.getType() != pm.base_type) || (getSimpleData(base) != pm.base_data))
+			if (base.getType() != pm.base_type)
 				continue;
 
 			// determine density of plant in radius
@@ -591,56 +587,62 @@ command:
 		/*
 		 * long array of plants for each biome.
 		 */
-		mapadd(Biome.SWAMPLAND,        Material.SAPLING,      (byte)0, Material.GRASS, (byte)0, Material.LEAVES,       (byte)0, 0.001 );
-		mapadd(Biome.SWAMPLAND,        Material.LONG_GRASS,   (byte)1, Material.GRASS, (byte)0, Material.LONG_GRASS,   (byte)1, 0.05  );
-		mapadd(Biome.FOREST,           Material.SAPLING,      (byte)0, Material.GRASS, (byte)0, Material.LEAVES,       (byte)0, 0.002 );
-		mapadd(Biome.FOREST,           Material.SAPLING,      (byte)2, Material.GRASS, (byte)0, Material.LEAVES,       (byte)2, 0.001 );
-		mapadd(Biome.FOREST,           Material.LONG_GRASS,   (byte)1, Material.GRASS, (byte)0, Material.LONG_GRASS,   (byte)1, 0.03  );
-		mapadd(Biome.BIRCH_FOREST,     Material.SAPLING,      (byte)2, Material.GRASS, (byte)0, Material.LEAVES,       (byte)2, 0.005 );
-		mapadd(Biome.BIRCH_FOREST,     Material.LONG_GRASS,   (byte)1, Material.GRASS, (byte)0, Material.LONG_GRASS,   (byte)1, 0.03  );
-		mapadd(Biome.TAIGA,            Material.DOUBLE_PLANT, (byte)3, Material.GRASS, (byte)0, Material.DOUBLE_PLANT, (byte)3, 0.01  );
-		mapadd(Biome.TAIGA,            Material.SAPLING,      (byte)1, Material.GRASS, (byte)0, Material.LEAVES,       (byte)1, 0.003 ); // no mega spruces!
-		mapadd(Biome.TAIGA,            Material.LONG_GRASS,   (byte)1, Material.GRASS, (byte)0, Material.LONG_GRASS,   (byte)1, 0.01  );
-		mapadd(Biome.TAIGA,            Material.LONG_GRASS,   (byte)2, Material.GRASS, (byte)0, Material.LONG_GRASS,   (byte)2, 0.03  );
-		mapadd(Biome.JUNGLE,           Material.SAPLING,      (byte)0, Material.GRASS, (byte)0, Material.LEAVES,       (byte)0, 0.05  );
-		mapadd(Biome.JUNGLE,           Material.SAPLING,      (byte)3, Material.GRASS, (byte)0, Material.LEAVES,       (byte)3, 0.05  );
-		mapadd(Biome.JUNGLE,           Material.LONG_GRASS,   (byte)1, Material.GRASS, (byte)0, Material.LONG_GRASS,   (byte)1, 0.01  );
-		mapadd(Biome.JUNGLE,           Material.LONG_GRASS,   (byte)2, Material.GRASS, (byte)0, Material.LONG_GRASS,   (byte)2, 0.01  );
-		mapadd(Biome.SAVANNA,          Material.DOUBLE_PLANT, (byte)2, Material.GRASS, (byte)0, Material.DOUBLE_PLANT, (byte)2, 0.01  );
-		mapadd(Biome.SAVANNA,          Material.SAPLING,      (byte)0, Material.GRASS, (byte)0, Material.LEAVES,       (byte)0, 0.001 );
-		mapadd(Biome.SAVANNA,          Material.SAPLING,      (byte)4, Material.GRASS, (byte)0, Material.LEAVES_2,     (byte)0, 0.001 );
-		mapadd(Biome.SAVANNA,          Material.LONG_GRASS,   (byte)1, Material.GRASS, (byte)0, Material.LONG_GRASS,   (byte)1, 0.04  );
-		mapadd(Biome.DESERT,           Material.CACTUS,       (byte)0, Material.SAND,  (byte)0, Material.CACTUS,       (byte)0, 0.002 );
-		mapadd(Biome.DESERT,           Material.DEAD_BUSH,    (byte)0, Material.SAND,  (byte)0, Material.DEAD_BUSH,    (byte)0, 0.002 );
-		mapadd(Biome.RIVER,            Material.DOUBLE_PLANT, (byte)2, Material.GRASS, (byte)0, Material.DOUBLE_PLANT, (byte)2, 0.001 );
-		mapadd(Biome.RIVER,            Material.DOUBLE_PLANT, (byte)3, Material.GRASS, (byte)0, Material.DOUBLE_PLANT, (byte)3, 0.002 );
-		mapadd(Biome.RIVER,            Material.LONG_GRASS,   (byte)1, Material.GRASS, (byte)0, Material.LONG_GRASS,   (byte)1, 0.01  );
-		mapadd(Biome.EXTREME_HILLS,    Material.SAPLING,      (byte)0, Material.GRASS, (byte)0, Material.LEAVES,       (byte)0, 0.0001);
-		mapadd(Biome.EXTREME_HILLS,    Material.SAPLING,      (byte)1, Material.GRASS, (byte)0, Material.LEAVES,       (byte)1, 0.0001);
-		mapadd(Biome.EXTREME_HILLS,    Material.LONG_GRASS,   (byte)1, Material.GRASS, (byte)0, Material.LONG_GRASS,   (byte)1, 0.02  );
-		mapadd(Biome.ROOFED_FOREST,    Material.SAPLING,      (byte)5, Material.GRASS, (byte)0, Material.LEAVES_2,     (byte)1, 0.006 ); // won't work!
-		mapadd(Biome.ROOFED_FOREST,    Material.LONG_GRASS,   (byte)1, Material.GRASS, (byte)0, Material.LONG_GRASS,   (byte)1, 0.01  );
-		mapadd(Biome.ICE_PLAINS,       Material.SAPLING,      (byte)1, Material.GRASS, (byte)0, Material.LEAVES,       (byte)1, 0.0001);
-		mapadd(Biome.ICE_PLAINS,       Material.SAPLING,      (byte)2, Material.GRASS, (byte)0, Material.LEAVES,       (byte)2, 0.0001);
-		mapadd(Biome.ICE_PLAINS,       Material.LONG_GRASS,   (byte)1, Material.GRASS, (byte)0, Material.LONG_GRASS,   (byte)1, 0.03  );
-		mapadd(Biome.PLAINS,           Material.LONG_GRASS,   (byte)1, Material.GRASS, (byte)0, Material.LONG_GRASS,   (byte)1, 0.25  );
-		mapadd(Biome.SUNFLOWER_PLAINS, Material.DOUBLE_PLANT, (byte)0, Material.GRASS, (byte)0, Material.DOUBLE_PLANT, (byte)0, 0.01  );
-		mapadd(Biome.SUNFLOWER_PLAINS, Material.DOUBLE_PLANT, (byte)2, Material.GRASS, (byte)0, Material.DOUBLE_PLANT, (byte)2, 0.01  );
-		mapadd(Biome.SUNFLOWER_PLAINS, Material.LONG_GRASS,   (byte)1, Material.GRASS, (byte)0, Material.LONG_GRASS,   (byte)1, 0.25  );
-		mapadd(Biome.FLOWER_FOREST,    Material.DOUBLE_PLANT, (byte)1, Material.GRASS, (byte)0, Material.DOUBLE_PLANT, (byte)1, 0.002 );
-		mapadd(Biome.FLOWER_FOREST,    Material.DOUBLE_PLANT, (byte)4, Material.GRASS, (byte)0, Material.DOUBLE_PLANT, (byte)4, 0.002 );
-		mapadd(Biome.FLOWER_FOREST,    Material.DOUBLE_PLANT, (byte)5, Material.GRASS, (byte)0, Material.DOUBLE_PLANT, (byte)5, 0.002 );
-		mapadd(Biome.FLOWER_FOREST,    Material.SAPLING,      (byte)0, Material.GRASS, (byte)0, Material.LEAVES,       (byte)0, 0.002 );
-		mapadd(Biome.FLOWER_FOREST,    Material.SAPLING,      (byte)2, Material.GRASS, (byte)0, Material.LEAVES,       (byte)2, 0.0005);
-		mapadd(Biome.FLOWER_FOREST,    Material.LONG_GRASS,   (byte)1, Material.GRASS, (byte)0, Material.LONG_GRASS,   (byte)1, 0.02  );
-		mapadd(Biome.FLOWER_FOREST,    Material.RED_ROSE,     (byte)0, Material.GRASS, (byte)0, Material.RED_ROSE,     (byte)0, 0.01  );
-		mapadd(Biome.FLOWER_FOREST,    Material.RED_ROSE,     (byte)2, Material.GRASS, (byte)0, Material.RED_ROSE,     (byte)2, 0.01  );
-		mapadd(Biome.FLOWER_FOREST,    Material.RED_ROSE,     (byte)3, Material.GRASS, (byte)0, Material.RED_ROSE,     (byte)3, 0.01  );
-		mapadd(Biome.FLOWER_FOREST,    Material.RED_ROSE,     (byte)4, Material.GRASS, (byte)0, Material.RED_ROSE,     (byte)4, 0.01  );
-		mapadd(Biome.FLOWER_FOREST,    Material.RED_ROSE,     (byte)5, Material.GRASS, (byte)0, Material.RED_ROSE,     (byte)5, 0.01  );
-		mapadd(Biome.FLOWER_FOREST,    Material.RED_ROSE,     (byte)6, Material.GRASS, (byte)0, Material.RED_ROSE,     (byte)6, 0.01  );
-		mapadd(Biome.FLOWER_FOREST,    Material.RED_ROSE,     (byte)7, Material.GRASS, (byte)0, Material.RED_ROSE,     (byte)7, 0.01  );
-		mapadd(Biome.FLOWER_FOREST,    Material.RED_ROSE,     (byte)8, Material.GRASS, (byte)0, Material.RED_ROSE,     (byte)8, 0.002 );
+		mapadd(Biome.SWAMPLAND,        Material.SAPLING,      (byte)0, Material.GRASS, Material.LEAVES,       (byte)0, 0.001 );
+		mapadd(Biome.SWAMPLAND,        Material.LONG_GRASS,   (byte)1, Material.GRASS, Material.LONG_GRASS,   (byte)1, 0.05  );
+		mapadd(Biome.FOREST,           Material.SAPLING,      (byte)0, Material.GRASS, Material.LEAVES,       (byte)0, 0.002 );
+		mapadd(Biome.FOREST,           Material.SAPLING,      (byte)2, Material.GRASS, Material.LEAVES,       (byte)2, 0.001 );
+		mapadd(Biome.FOREST,           Material.LONG_GRASS,   (byte)1, Material.GRASS, Material.LONG_GRASS,   (byte)1, 0.03  );
+		mapadd(Biome.BIRCH_FOREST,     Material.SAPLING,      (byte)2, Material.GRASS, Material.LEAVES,       (byte)2, 0.005 );
+		mapadd(Biome.BIRCH_FOREST,     Material.LONG_GRASS,   (byte)1, Material.GRASS, Material.LONG_GRASS,   (byte)1, 0.03  );
+		mapadd(Biome.TAIGA,            Material.DOUBLE_PLANT, (byte)3, Material.GRASS, Material.DOUBLE_PLANT, (byte)3, 0.01  );
+		mapadd(Biome.TAIGA,            Material.SAPLING,      (byte)1, Material.GRASS, Material.LEAVES,       (byte)1, 0.003 ); // no mega spruces!
+		mapadd(Biome.TAIGA,            Material.LONG_GRASS,   (byte)1, Material.GRASS, Material.LONG_GRASS,   (byte)1, 0.01  );
+		mapadd(Biome.TAIGA,            Material.LONG_GRASS,   (byte)2, Material.GRASS, Material.LONG_GRASS,   (byte)2, 0.03  );
+		mapadd(Biome.JUNGLE,           Material.SAPLING,      (byte)0, Material.GRASS, Material.LEAVES,       (byte)0, 0.05  );
+		mapadd(Biome.JUNGLE,           Material.SAPLING,      (byte)3, Material.GRASS, Material.LEAVES,       (byte)3, 0.05  );
+		mapadd(Biome.JUNGLE,           Material.LONG_GRASS,   (byte)1, Material.GRASS, Material.LONG_GRASS,   (byte)1, 0.01  );
+		mapadd(Biome.JUNGLE,           Material.LONG_GRASS,   (byte)2, Material.GRASS, Material.LONG_GRASS,   (byte)2, 0.01  );
+		mapadd(Biome.SAVANNA,          Material.DOUBLE_PLANT, (byte)2, Material.GRASS, Material.DOUBLE_PLANT, (byte)2, 0.01  );
+		mapadd(Biome.SAVANNA,          Material.SAPLING,      (byte)0, Material.GRASS, Material.LEAVES,       (byte)0, 0.001 );
+		mapadd(Biome.SAVANNA,          Material.SAPLING,      (byte)4, Material.GRASS, Material.LEAVES_2,     (byte)0, 0.001 );
+		mapadd(Biome.SAVANNA,          Material.LONG_GRASS,   (byte)1, Material.GRASS, Material.LONG_GRASS,   (byte)1, 0.04  );
+		mapadd(Biome.MESA,             Material.CACTUS,       (byte)0, Material.SAND,  Material.CACTUS,       (byte)0, 0.002 );
+		mapadd(Biome.MESA,             Material.SAPLING,      (byte)0, Material.GRASS, Material.LEAVES,       (byte)0, 0.002 );
+		mapadd(Biome.MESA,             Material.DEAD_BUSH,    (byte)0, Material.SAND,  Material.DEAD_BUSH,    (byte)0, 0.02  );
+		mapadd(Biome.MESA,             Material.DEAD_BUSH,    (byte)0, Material.STAINED_CLAY, Material.DEAD_BUSH, (byte)0, 0.02 );
+		mapadd(Biome.MESA,             Material.DEAD_BUSH,    (byte)0, Material.HARD_CLAY,    Material.DEAD_BUSH, (byte)0, 0.02 );
+		mapadd(Biome.MESA,             Material.LONG_GRASS,   (byte)1, Material.GRASS, Material.LONG_GRASS,   (byte)1, 0.01  );
+		mapadd(Biome.DESERT,           Material.CACTUS,       (byte)0, Material.SAND,  Material.CACTUS,       (byte)0, 0.002 );
+		mapadd(Biome.DESERT,           Material.DEAD_BUSH,    (byte)0, Material.SAND,  Material.DEAD_BUSH,    (byte)0, 0.002 );
+		mapadd(Biome.RIVER,            Material.DOUBLE_PLANT, (byte)2, Material.GRASS, Material.DOUBLE_PLANT, (byte)2, 0.001 );
+		mapadd(Biome.RIVER,            Material.DOUBLE_PLANT, (byte)3, Material.GRASS, Material.DOUBLE_PLANT, (byte)3, 0.002 );
+		mapadd(Biome.RIVER,            Material.LONG_GRASS,   (byte)1, Material.GRASS, Material.LONG_GRASS,   (byte)1, 0.01  );
+		mapadd(Biome.EXTREME_HILLS,    Material.SAPLING,      (byte)0, Material.GRASS, Material.LEAVES,       (byte)0, 0.0001);
+		mapadd(Biome.EXTREME_HILLS,    Material.SAPLING,      (byte)1, Material.GRASS, Material.LEAVES,       (byte)1, 0.0001);
+		mapadd(Biome.EXTREME_HILLS,    Material.LONG_GRASS,   (byte)1, Material.GRASS, Material.LONG_GRASS,   (byte)1, 0.02  );
+		mapadd(Biome.ROOFED_FOREST,    Material.SAPLING,      (byte)5, Material.GRASS, Material.LEAVES_2,     (byte)1, 0.006 ); // won't work!
+		mapadd(Biome.ROOFED_FOREST,    Material.LONG_GRASS,   (byte)1, Material.GRASS, Material.LONG_GRASS,   (byte)1, 0.01  );
+		mapadd(Biome.ICE_PLAINS,       Material.SAPLING,      (byte)1, Material.GRASS, Material.LEAVES,       (byte)1, 0.0001);
+		mapadd(Biome.ICE_PLAINS,       Material.SAPLING,      (byte)2, Material.GRASS, Material.LEAVES,       (byte)2, 0.0001);
+		mapadd(Biome.ICE_PLAINS,       Material.LONG_GRASS,   (byte)1, Material.GRASS, Material.LONG_GRASS,   (byte)1, 0.03  );
+		mapadd(Biome.PLAINS,           Material.LONG_GRASS,   (byte)1, Material.GRASS, Material.LONG_GRASS,   (byte)1, 0.25  );
+		mapadd(Biome.SUNFLOWER_PLAINS, Material.DOUBLE_PLANT, (byte)0, Material.GRASS, Material.DOUBLE_PLANT, (byte)0, 0.01  );
+		mapadd(Biome.SUNFLOWER_PLAINS, Material.DOUBLE_PLANT, (byte)2, Material.GRASS, Material.DOUBLE_PLANT, (byte)2, 0.01  );
+		mapadd(Biome.SUNFLOWER_PLAINS, Material.LONG_GRASS,   (byte)1, Material.GRASS, Material.LONG_GRASS,   (byte)1, 0.25  );
+		mapadd(Biome.FLOWER_FOREST,    Material.DOUBLE_PLANT, (byte)1, Material.GRASS, Material.DOUBLE_PLANT, (byte)1, 0.002 );
+		mapadd(Biome.FLOWER_FOREST,    Material.DOUBLE_PLANT, (byte)4, Material.GRASS, Material.DOUBLE_PLANT, (byte)4, 0.002 );
+		mapadd(Biome.FLOWER_FOREST,    Material.DOUBLE_PLANT, (byte)5, Material.GRASS, Material.DOUBLE_PLANT, (byte)5, 0.002 );
+		mapadd(Biome.FLOWER_FOREST,    Material.SAPLING,      (byte)0, Material.GRASS, Material.LEAVES,       (byte)0, 0.002 );
+		mapadd(Biome.FLOWER_FOREST,    Material.SAPLING,      (byte)2, Material.GRASS, Material.LEAVES,       (byte)2, 0.0005);
+		mapadd(Biome.FLOWER_FOREST,    Material.LONG_GRASS,   (byte)1, Material.GRASS, Material.LONG_GRASS,   (byte)1, 0.02  );
+		mapadd(Biome.FLOWER_FOREST,    Material.RED_ROSE,     (byte)0, Material.GRASS, Material.RED_ROSE,     (byte)0, 0.01  );
+		mapadd(Biome.FLOWER_FOREST,    Material.RED_ROSE,     (byte)2, Material.GRASS, Material.RED_ROSE,     (byte)2, 0.01  );
+		mapadd(Biome.FLOWER_FOREST,    Material.RED_ROSE,     (byte)3, Material.GRASS, Material.RED_ROSE,     (byte)3, 0.01  );
+		mapadd(Biome.FLOWER_FOREST,    Material.RED_ROSE,     (byte)4, Material.GRASS, Material.RED_ROSE,     (byte)4, 0.01  );
+		mapadd(Biome.FLOWER_FOREST,    Material.RED_ROSE,     (byte)5, Material.GRASS, Material.RED_ROSE,     (byte)5, 0.01  );
+		mapadd(Biome.FLOWER_FOREST,    Material.RED_ROSE,     (byte)6, Material.GRASS, Material.RED_ROSE,     (byte)6, 0.01  );
+		mapadd(Biome.FLOWER_FOREST,    Material.RED_ROSE,     (byte)7, Material.GRASS, Material.RED_ROSE,     (byte)7, 0.01  );
+		mapadd(Biome.FLOWER_FOREST,    Material.RED_ROSE,     (byte)8, Material.GRASS, Material.RED_ROSE,     (byte)8, 0.002 );
 
 		getCommand("botany").setExecutor(new BotanyCommand());
 
