@@ -186,6 +186,32 @@ public final class Botany extends JavaPlugin {
 		return b;
 	}
 
+	@SuppressWarnings("deprecation")
+	/* needed to make sure we don't think that a red_rose:9 is a different flower than :0 */
+	private byte getSimpleData(Block b) {
+		switch(b.getType()) {
+		case LONG_GRASS:
+			return (byte) (b.getData() % 3);
+		case DOUBLE_PLANT:
+			return (byte) (b.getData() % 8);
+		case LEAVES:
+			return (byte) (b.getData() % 4);
+		case LEAVES_2:
+			return (byte) (b.getData() % 2);
+		case SAPLING:
+			return (byte) (b.getData() % 6);
+		case RED_ROSE:
+			return (byte) (b.getData() % 9);
+		default:
+			return 0;
+		}
+	}
+
+	@SuppressWarnings("deprecation")
+	private void setData(Block b, byte d) {
+		b.setData(d);
+	}
+
 	private void growAt(World world, int x, int z) {
 		Block b = world.getHighestBlockAt(x, z);
 
@@ -211,7 +237,7 @@ public final class Botany extends JavaPlugin {
 			Block base = b.getRelative(BlockFace.DOWN);
 
 			// check if base is OK for this material
-			if ((base.getType() != pm.base_type) || (base.getData() != pm.base_data))
+			if ((base.getType() != pm.base_type) || (getSimpleData(base) != pm.base_data))
 				continue;
 
 			// determine density of plant in radius
@@ -221,8 +247,8 @@ public final class Botany extends JavaPlugin {
 					if (h.getType() == Material.AIR)
 						h = h.getRelative(BlockFace.DOWN);
 
-					if (((h.getType() == pm.scan_type) && (h.getData() == pm.scan_data)) ||
-						((h.getType() == pm.target_type) && (h.getData() == pm.target_data)))
+					if (((h.getType() == pm.scan_type) && (getSimpleData(h) == pm.scan_data)) ||
+						((h.getType() == pm.target_type) && (getSimpleData(h) == pm.target_data)))
 						count++;
 				}
 			}
@@ -231,11 +257,13 @@ public final class Botany extends JavaPlugin {
 			if (((double)count / (pm.radius * pm.radius)) < pm.density) {
 				// plant the thing
 				b.setType(pm.target_type);
-				b.setData(pm.target_data);
+				setData(b, pm.target_data);
 				if (pm.target_type == Material.DOUBLE_PLANT) {
+					Random rnd = new Random();
 					Block tb = b.getRelative(BlockFace.UP);
 					tb.setType(Material.DOUBLE_PLANT);
-					tb.setData((byte)11);
+					/* top half seems to be (8 & orientation of planting) - make it random */
+					setData(tb, (byte)(8 & rnd.nextInt(4)));
 				}
 
 				if (stat_planted.get(pm.target_type) == null)
@@ -267,14 +295,15 @@ public final class Botany extends JavaPlugin {
 
 	class BotanyCommand implements CommandExecutor {
 		public boolean onCommand(CommandSender sender, Command command, String label, String[] split) {
-			String msg = "unknown command bitches";
+			String msg = "unknown command";
 			String helpmsg = "\n" + 
 					"/botany help - display this help message\n" +
 					"/botany stats - display statistics\n" +
 					"/botany list - display enabled worlds\n" +
 					"/botany blocks <int> - set number of block attempts per cycle\n" +
 					"/botany enable <world> - enable for world\n" +
-					"/botany disable <world> - enable for world";
+					"/botany disable <world> - enable for world\n" +
+					"/botany scan - scan the area in your current biome for plants";
 
 command:
 			if (split.length >= 1) {
@@ -363,6 +392,57 @@ command:
 						msg = "Planting statistics:\n";
 						for (Material m: stat_planted.keySet())
 							msg += m.toString() + " - " + stat_planted.get(m) + "\n";
+						break;
+					case "scan":
+						if (!(sender instanceof Player)) {
+							msg = "You must be a player to issue this command!\n";
+							break;
+						}
+
+						Player player = (Player)sender;
+						Block block = player.getLocation().getBlock();
+						Biome biome = block.getBiome();
+						World world = player.getWorld();
+						long area = 0;
+						Map <String,Long> plants = new HashMap<String,Long>();
+
+						for (int x = block.getX() - 100; x < block.getX() + 100; x++) {
+							for (int z = block.getZ() - 100; z < block.getZ() + 100; z++) {
+								Block scan = world.getHighestBlockAt(x, z);
+								if (!scan.getBiome().equals(biome))
+									continue;
+								if (scan.getType() == Material.AIR)
+									scan = scan.getRelative(BlockFace.DOWN);
+
+								area++;
+
+								Material mat = scan.getType();
+								switch (mat) {
+								case LONG_GRASS:
+								case DOUBLE_PLANT:
+								case CACTUS:
+								case LEAVES:
+								case LEAVES_2:
+								case SAPLING:
+								case RED_ROSE:
+								case YELLOW_FLOWER:
+								case DEAD_BUSH:
+								case SUGAR_CANE:
+									String name = mat.toString() + ":" + getSimpleData(scan);
+									if (plants.get(name) != null)
+										plants.put(name, plants.get(name) + 1);
+									else
+										plants.put(name, (long)1);
+									break;
+								default:
+									break;
+								}
+							}
+						}
+						msg = "Scan results:\n";
+						msg += "Biome: " + biome.toString() + " Area: " + area + " range: " + 100 + "\n";
+						for (String name: plants.keySet())
+							msg += biome.toString() + "," + name + "," + plants.get(name) + "," + (String.format("%.3f",  (float)plants.get(name) / (float)area)) + "\n";
 						break;
 					case "help":
 					default:
