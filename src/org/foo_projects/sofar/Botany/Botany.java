@@ -50,7 +50,7 @@ public final class Botany extends JavaPlugin {
 	private boolean have_worldguard = false;
 	private boolean have_residence = false;
 
-	private Map<Material, Long> stat_planted = new HashMap<Material, Long>();
+	private Map<String, Long> stat_planted = new HashMap<String, Long>();
 
 	private ChunkList chunkList;
 
@@ -309,8 +309,16 @@ public final class Botany extends JavaPlugin {
 			for (long xx = b.getX() - pm.radius; xx < b.getX() + pm.radius; xx++) {
 				for (long zz = b.getZ() - pm.radius; zz < b.getZ() + pm.radius; zz++) {
 					Block h = world.getHighestBlockAt((int)xx, (int)zz);
-					if (h.getType() == Material.AIR)
+					/* if we're not scanning for leaves, lower scan to beneath any */
+					if ((pm.scan_type != Material.LEAVES) && (pm.scan_type != Material.LEAVES_2)) {
+						while (h.getType() == Material.LEAVES || h.getType() == Material.LEAVES_2)
+							h = h.getRelative(BlockFace.DOWN);
+					}
+
+					/* transparent block or under a tree */
+					while (h.getType() == Material.AIR) {
 						h = h.getRelative(BlockFace.DOWN);
+					}
 
 					if (((h.getType() == pm.scan_type) && (getSimpleData(h) == pm.scan_data)) ||
 						((h.getType() == pm.target_type) && (getSimpleData(h) == pm.target_data)))
@@ -331,10 +339,10 @@ public final class Botany extends JavaPlugin {
 					setData(tb, (byte)(8 & rnd.nextInt(4)));
 				}
 
-				if (stat_planted.get(pm.target_type) == null)
-					stat_planted.put(pm.target_type, (long)1);
+				if (stat_planted.get(pm.target_type.toString() + ":" + pm.target_data) == null)
+					stat_planted.put(pm.target_type.toString() + ":" + pm.target_data, (long)1);
 				else
-					stat_planted.put(pm.target_type, stat_planted.get(pm.target_type) + 1);
+					stat_planted.put(pm.target_type.toString() + ":" + pm.target_data, stat_planted.get(pm.target_type.toString() + ":" + pm.target_data) + 1);
 
 				return;
 			}
@@ -455,8 +463,8 @@ command:
 						break;
 					case "stats":
 						msg = "Planting statistics:\n";
-						for (Material m: stat_planted.keySet())
-							msg += m.toString() + " - " + stat_planted.get(m) + "\n";
+						for (String m: stat_planted.keySet())
+							msg += m + " - " + stat_planted.get(m) + "\n";
 						break;
 					case "scan":
 						if (!(sender instanceof Player)) {
