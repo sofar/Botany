@@ -22,12 +22,33 @@ import org.bukkit.scheduler.BukkitScheduler;
 
 import org.foo_projects.sofar.util.ChunkList.ChunkList;
 
+import com.bekvon.bukkit.residence.Residence;
+import com.bekvon.bukkit.residence.protection.ClaimedResidence;
+
+import com.massivecraft.factions.entity.BoardColls;
+import com.massivecraft.factions.entity.Faction;
+import com.massivecraft.mcore.ps.PS;
+
+import com.palmergames.bukkit.towny.object.TownyUniverse;
+
+import com.sk89q.worldguard.bukkit.WGBukkit;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.managers.RegionManager;
+
 public final class Botany extends JavaPlugin {
 	private long conf_blocks = 1;
 	private int conf_ticks = 1;
 
 	private boolean conf_saplings = true;
 	private boolean conf_cacti = true;
+
+	private boolean conf_protect = true;
+
+	private boolean have_factions = false;
+	private boolean have_factions_old = false;
+	private boolean have_towny = false;
+	private boolean have_worldguard = false;
+	private boolean have_residence = false;
 
 	private Map<Material, Long> stat_planted = new HashMap<Material, Long>();
 
@@ -212,8 +233,45 @@ public final class Botany extends JavaPlugin {
 		b.setData(d);
 	}
 
+	private boolean isProtected(Block block) {
+		if (!conf_protect)
+			return false;
+
+		if (have_factions_old) {
+			com.massivecraft.factions.Faction faction = com.massivecraft.factions.Board.getFactionAt(new com.massivecraft.factions.FLocation(block));
+			if (!faction.isNone())
+				return true;
+		}
+		if (have_factions) {
+			Faction faction = BoardColls.get().getFactionAt(PS.valueOf(block.getLocation()));
+			if (!faction.isNone())
+				return true;
+		}
+		if (have_towny) {
+			if (TownyUniverse.getTownBlock(block.getLocation()) != null)
+				return true;
+		}
+		if (have_worldguard) {
+			RegionManager rm = WGBukkit.getRegionManager(block.getWorld());
+			if (rm == null)
+				return false;
+			ApplicableRegionSet set = rm.getApplicableRegions(block.getLocation());
+			return (set.size() > 0);
+		}
+		if (have_residence) {
+			ClaimedResidence res = Residence.getResidenceManager().getByLoc(block.getLocation());
+			if (res != null)
+				return true;
+		}
+
+		return false;
+	}
+
 	private void growAt(World world, int x, int z) {
 		Block b = world.getHighestBlockAt(x, z);
+
+		if (isProtected(b))
+			return;
 
 		// verify this block is empty
 		if (b.getType() != Material.AIR)
@@ -483,6 +541,37 @@ command:
 		/* populate chunk cache for each world */
 		for (int i = 0; i < worldStringList.size(); i++)
 			chunkList.enableWorld(worldStringList.get(i));
+
+		/* Detect protection plugins like WG, factions, etc. */
+		if (org.bukkit.Bukkit.getPluginManager().isPluginEnabled("Factions")) {
+			try {
+				/* this is an old API thing */
+				new com.massivecraft.factions.FLocation();
+			} catch (NoClassDefFoundError e) {
+				have_factions = true;
+			}
+			if (!have_factions)
+				have_factions_old = true;
+		}
+
+		if (org.bukkit.Bukkit.getPluginManager().isPluginEnabled("Towny"))
+			have_towny = true;
+
+		if (org.bukkit.Bukkit.getPluginManager().isPluginEnabled("WorldGuard"))
+			have_worldguard = true;
+
+		if (org.bukkit.Bukkit.getPluginManager().isPluginEnabled("Residence"))
+			have_residence = true;
+
+		getLogger().info("Protection plugins: " +
+						(have_factions | have_factions_old ? "+" : "-") + "Factions, " +
+						(have_towny ? "+" : "-") + "Towny, " +
+						(have_worldguard ? "+" : "-") + "WorldGuard, " +
+						(have_residence ? "+" : "-") + "Residence"
+						);
+
+		conf_protect = getConfig().getBoolean("protect");
+		getLogger().info("protection is " + (conf_protect ? "on" : "off"));
 
 		// long array of plants for each biome
 		mapadd(Biome.BEACH,   Material.LONG_GRASS,    (byte)1, Material.GRASS, (byte)0, Material.LONG_GRASS,    (byte)1, 0.01,   16);

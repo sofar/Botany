@@ -2,5 +2,6 @@ blocks: 1
 ticks: 1
 saplings: true
 cacti: true
+protect: true
 worlds:
 - world
