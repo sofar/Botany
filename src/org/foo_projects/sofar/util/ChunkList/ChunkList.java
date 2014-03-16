@@ -114,6 +114,13 @@ public class ChunkList {
 		return worldList.isEmpty();
 	}
 
+	public long size() {
+		long size = 0;
+		for (World w: worldList)
+			size += w.getLoadedChunks().length;
+		return size;
+	}
+
 	public Boolean isLoaded(Chunk c) {
 		String key = "(" + c.getWorld().getName() + ":" + c.getX() + "," + c.getZ() + ")";
 		return chunkMap.containsKey(key);

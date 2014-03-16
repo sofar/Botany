@@ -458,7 +458,8 @@ command:
 							msg += "- " + w.getName() + "\n";
 						break;
 					case "stats":
-						msg = "Planting statistics:\n";
+						msg = "Planting statistics: ";
+						msg += "(Chunks loaded: " + chunkList.size() + ")\n";
 						for (String m: stat_planted.keySet())
 							msg += m + " - " + stat_planted.get(m) + "\n";
 						break;
