@@ -608,9 +608,9 @@ command:
 		mapadd(Biome.SAVANNA,          Material.LONG_GRASS,   (byte)1, Material.GRASS, Material.LONG_GRASS,   (byte)1, 0.04  );
 		mapadd(Biome.MESA,             Material.CACTUS,       (byte)0, Material.SAND,  Material.CACTUS,       (byte)0, 0.002 );
 		mapadd(Biome.MESA,             Material.SAPLING,      (byte)0, Material.GRASS, Material.LEAVES,       (byte)0, 0.002 );
-		mapadd(Biome.MESA,             Material.DEAD_BUSH,    (byte)0, Material.SAND,  Material.DEAD_BUSH,    (byte)0, 0.02  );
-		mapadd(Biome.MESA,             Material.DEAD_BUSH,    (byte)0, Material.STAINED_CLAY, Material.DEAD_BUSH, (byte)0, 0.02 );
-		mapadd(Biome.MESA,             Material.DEAD_BUSH,    (byte)0, Material.HARD_CLAY,    Material.DEAD_BUSH, (byte)0, 0.02 );
+		mapadd(Biome.MESA,             Material.DEAD_BUSH,    (byte)0, Material.SAND,  Material.DEAD_BUSH,    (byte)0, 0.01  );
+		mapadd(Biome.MESA,             Material.DEAD_BUSH,    (byte)0, Material.STAINED_CLAY, Material.DEAD_BUSH, (byte)0, 0.01 );
+		mapadd(Biome.MESA,             Material.DEAD_BUSH,    (byte)0, Material.HARD_CLAY,    Material.DEAD_BUSH, (byte)0, 0.01 );
 		mapadd(Biome.MESA,             Material.LONG_GRASS,   (byte)1, Material.GRASS, Material.LONG_GRASS,   (byte)1, 0.01  );
 		mapadd(Biome.DESERT,           Material.CACTUS,       (byte)0, Material.SAND,  Material.CACTUS,       (byte)0, 0.002 );
 		mapadd(Biome.DESERT,           Material.DEAD_BUSH,    (byte)0, Material.SAND,  Material.DEAD_BUSH,    (byte)0, 0.002 );
