@@ -602,6 +602,10 @@ command:
 		mapadd(Biome.TAIGA,            Material.SAPLING,      (byte)1, Material.GRASS, (byte)0, Material.LEAVES,       (byte)1, 0.003 ); // no mega spruces!
 		mapadd(Biome.TAIGA,            Material.LONG_GRASS,   (byte)1, Material.GRASS, (byte)0, Material.LONG_GRASS,   (byte)1, 0.01  );
 		mapadd(Biome.TAIGA,            Material.LONG_GRASS,   (byte)2, Material.GRASS, (byte)0, Material.LONG_GRASS,   (byte)2, 0.03  );
+		mapadd(Biome.JUNGLE,           Material.SAPLING,      (byte)0, Material.GRASS, (byte)0, Material.LEAVES,       (byte)0, 0.05  );
+		mapadd(Biome.JUNGLE,           Material.SAPLING,      (byte)3, Material.GRASS, (byte)0, Material.LEAVES,       (byte)3, 0.05  );
+		mapadd(Biome.JUNGLE,           Material.LONG_GRASS,   (byte)1, Material.GRASS, (byte)0, Material.LONG_GRASS,   (byte)1, 0.01  );
+		mapadd(Biome.JUNGLE,           Material.LONG_GRASS,   (byte)2, Material.GRASS, (byte)0, Material.LONG_GRASS,   (byte)2, 0.01  );
 		mapadd(Biome.SAVANNA,          Material.DOUBLE_PLANT, (byte)2, Material.GRASS, (byte)0, Material.DOUBLE_PLANT, (byte)2, 0.01  );
 		mapadd(Biome.SAVANNA,          Material.SAPLING,      (byte)0, Material.GRASS, (byte)0, Material.LEAVES,       (byte)0, 0.001 );
 		mapadd(Biome.SAVANNA,          Material.SAPLING,      (byte)4, Material.GRASS, (byte)0, Material.LEAVES_2,     (byte)0, 0.001 );
