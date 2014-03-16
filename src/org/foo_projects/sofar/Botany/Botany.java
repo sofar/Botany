@@ -113,7 +113,7 @@ public final class Botany extends JavaPlugin {
 	private void mapadd(Biome biome, Material tt, byte td, Material bt, byte bd, Material st, byte sd, double d) {
 		List<plantMatrix> pml;
 		/*
-		 *  this can likely be optimized more, since now we scan from -r to +r, which ends up
+		 * q this can likely be optimized more, since now we scan from -r to +r, which ends up
 		 * ~2x as much as is needed to scan at least 1/d blocks total
 		 */
 		long r = (long)Math.sqrt(0.5 / d);
@@ -580,37 +580,36 @@ command:
 		conf_protect = getConfig().getBoolean("protect");
 		getLogger().info("protection is " + (conf_protect ? "on" : "off"));
 
-		// long array of plants for each biome
-		mapadd(Biome.SWAMPLAND,        Material.SAPLING,      (byte)0, Material.GRASS, (byte)0, Material.LEAVES,       (byte)0, 0.1   );
+		/*
+		 * long array of plants for each biome.
+		 */
+		mapadd(Biome.SWAMPLAND,        Material.SAPLING,      (byte)0, Material.GRASS, (byte)0, Material.LEAVES,       (byte)0, 0.001 );
 		mapadd(Biome.SWAMPLAND,        Material.LONG_GRASS,   (byte)1, Material.GRASS, (byte)0, Material.LONG_GRASS,   (byte)1, 0.05  );
-		mapadd(Biome.FOREST,           Material.SAPLING,      (byte)0, Material.GRASS, (byte)0, Material.LEAVES,       (byte)0, 0.2   );
-		mapadd(Biome.FOREST,           Material.SAPLING,      (byte)1, Material.GRASS, (byte)0, Material.LEAVES,       (byte)1, 0.005 );
-		mapadd(Biome.FOREST,           Material.SAPLING,      (byte)2, Material.GRASS, (byte)0, Material.LEAVES,       (byte)2, 0.1   );
-		mapadd(Biome.FOREST,           Material.SAPLING,      (byte)5, Material.GRASS, (byte)0, Material.LEAVES_2,     (byte)1, 0.5   );
+		mapadd(Biome.FOREST,           Material.SAPLING,      (byte)0, Material.GRASS, (byte)0, Material.LEAVES,       (byte)0, 0.002 );
+		mapadd(Biome.FOREST,           Material.SAPLING,      (byte)2, Material.GRASS, (byte)0, Material.LEAVES,       (byte)2, 0.001 );
 		mapadd(Biome.FOREST,           Material.LONG_GRASS,   (byte)1, Material.GRASS, (byte)0, Material.LONG_GRASS,   (byte)1, 0.03  );
-		mapadd(Biome.BIRCH_FOREST,     Material.SAPLING,      (byte)2, Material.GRASS, (byte)0, Material.LEAVES,       (byte)2, 0.5   );
+		mapadd(Biome.BIRCH_FOREST,     Material.SAPLING,      (byte)2, Material.GRASS, (byte)0, Material.LEAVES,       (byte)2, 0.005 );
 		mapadd(Biome.BIRCH_FOREST,     Material.LONG_GRASS,   (byte)1, Material.GRASS, (byte)0, Material.LONG_GRASS,   (byte)1, 0.03  );
 		mapadd(Biome.TAIGA,            Material.DOUBLE_PLANT, (byte)3, Material.GRASS, (byte)0, Material.DOUBLE_PLANT, (byte)3, 0.01  );
-		mapadd(Biome.TAIGA,            Material.SAPLING,      (byte)1, Material.GRASS, (byte)0, Material.LEAVES,       (byte)1, 0.3   );
+		mapadd(Biome.TAIGA,            Material.SAPLING,      (byte)1, Material.GRASS, (byte)0, Material.LEAVES,       (byte)1, 0.003 ); // no mega spruces!
 		mapadd(Biome.TAIGA,            Material.LONG_GRASS,   (byte)1, Material.GRASS, (byte)0, Material.LONG_GRASS,   (byte)1, 0.01  );
 		mapadd(Biome.TAIGA,            Material.LONG_GRASS,   (byte)2, Material.GRASS, (byte)0, Material.LONG_GRASS,   (byte)2, 0.03  );
 		mapadd(Biome.SAVANNA,          Material.DOUBLE_PLANT, (byte)2, Material.GRASS, (byte)0, Material.DOUBLE_PLANT, (byte)2, 0.01  );
-		mapadd(Biome.SAVANNA,          Material.SAPLING,      (byte)0, Material.GRASS, (byte)0, Material.LEAVES,       (byte)0, 0.01  );
-		mapadd(Biome.SAVANNA,          Material.SAPLING,      (byte)4, Material.GRASS, (byte)0, Material.LEAVES_2,     (byte)0, 0.1   );
-		mapadd(Biome.SAVANNA,          Material.LONG_GRASS,   (byte)1, Material.GRASS, (byte)0, Material.LONG_GRASS,   (byte)1, 0.4   );
+		mapadd(Biome.SAVANNA,          Material.SAPLING,      (byte)0, Material.GRASS, (byte)0, Material.LEAVES,       (byte)0, 0.001 );
+		mapadd(Biome.SAVANNA,          Material.SAPLING,      (byte)4, Material.GRASS, (byte)0, Material.LEAVES_2,     (byte)0, 0.001 );
+		mapadd(Biome.SAVANNA,          Material.LONG_GRASS,   (byte)1, Material.GRASS, (byte)0, Material.LONG_GRASS,   (byte)1, 0.04  );
 		mapadd(Biome.DESERT,           Material.CACTUS,       (byte)0, Material.SAND,  (byte)0, Material.CACTUS,       (byte)0, 0.002 );
 		mapadd(Biome.DESERT,           Material.DEAD_BUSH,    (byte)0, Material.SAND,  (byte)0, Material.DEAD_BUSH,    (byte)0, 0.002 );
 		mapadd(Biome.RIVER,            Material.DOUBLE_PLANT, (byte)2, Material.GRASS, (byte)0, Material.DOUBLE_PLANT, (byte)2, 0.001 );
 		mapadd(Biome.RIVER,            Material.DOUBLE_PLANT, (byte)3, Material.GRASS, (byte)0, Material.DOUBLE_PLANT, (byte)3, 0.002 );
 		mapadd(Biome.RIVER,            Material.LONG_GRASS,   (byte)1, Material.GRASS, (byte)0, Material.LONG_GRASS,   (byte)1, 0.01  );
-		mapadd(Biome.EXTREME_HILLS,    Material.SAPLING,      (byte)0, Material.GRASS, (byte)0, Material.LEAVES,       (byte)0, 0.005 );
-		mapadd(Biome.EXTREME_HILLS,    Material.SAPLING,      (byte)1, Material.GRASS, (byte)0, Material.LEAVES,       (byte)1, 0.003 );
-		mapadd(Biome.EXTREME_HILLS,    Material.SAPLING,      (byte)2, Material.GRASS, (byte)0, Material.LEAVES,       (byte)2, 0.003 );
+		mapadd(Biome.EXTREME_HILLS,    Material.SAPLING,      (byte)0, Material.GRASS, (byte)0, Material.LEAVES,       (byte)0, 0.0001);
+		mapadd(Biome.EXTREME_HILLS,    Material.SAPLING,      (byte)1, Material.GRASS, (byte)0, Material.LEAVES,       (byte)1, 0.0001);
 		mapadd(Biome.EXTREME_HILLS,    Material.LONG_GRASS,   (byte)1, Material.GRASS, (byte)0, Material.LONG_GRASS,   (byte)1, 0.02  );
-		mapadd(Biome.ROOFED_FOREST,    Material.SAPLING,      (byte)5, Material.GRASS, (byte)0, Material.LEAVES_2,     (byte)1, 0.6   );
+		mapadd(Biome.ROOFED_FOREST,    Material.SAPLING,      (byte)5, Material.GRASS, (byte)0, Material.LEAVES_2,     (byte)1, 0.006 ); // won't work!
 		mapadd(Biome.ROOFED_FOREST,    Material.LONG_GRASS,   (byte)1, Material.GRASS, (byte)0, Material.LONG_GRASS,   (byte)1, 0.01  );
-		mapadd(Biome.ICE_PLAINS,       Material.SAPLING,      (byte)1, Material.GRASS, (byte)0, Material.LEAVES,       (byte)1, 0.001 );
-		mapadd(Biome.ICE_PLAINS,       Material.SAPLING,      (byte)2, Material.GRASS, (byte)0, Material.LEAVES,       (byte)2, 0.001 );
+		mapadd(Biome.ICE_PLAINS,       Material.SAPLING,      (byte)1, Material.GRASS, (byte)0, Material.LEAVES,       (byte)1, 0.0001);
+		mapadd(Biome.ICE_PLAINS,       Material.SAPLING,      (byte)2, Material.GRASS, (byte)0, Material.LEAVES,       (byte)2, 0.0001);
 		mapadd(Biome.ICE_PLAINS,       Material.LONG_GRASS,   (byte)1, Material.GRASS, (byte)0, Material.LONG_GRASS,   (byte)1, 0.03  );
 		mapadd(Biome.PLAINS,           Material.LONG_GRASS,   (byte)1, Material.GRASS, (byte)0, Material.LONG_GRASS,   (byte)1, 0.25  );
 		mapadd(Biome.SUNFLOWER_PLAINS, Material.DOUBLE_PLANT, (byte)0, Material.GRASS, (byte)0, Material.DOUBLE_PLANT, (byte)0, 0.01  );
@@ -619,8 +618,8 @@ command:
 		mapadd(Biome.FLOWER_FOREST,    Material.DOUBLE_PLANT, (byte)1, Material.GRASS, (byte)0, Material.DOUBLE_PLANT, (byte)1, 0.002 );
 		mapadd(Biome.FLOWER_FOREST,    Material.DOUBLE_PLANT, (byte)4, Material.GRASS, (byte)0, Material.DOUBLE_PLANT, (byte)4, 0.002 );
 		mapadd(Biome.FLOWER_FOREST,    Material.DOUBLE_PLANT, (byte)5, Material.GRASS, (byte)0, Material.DOUBLE_PLANT, (byte)5, 0.002 );
-		mapadd(Biome.FLOWER_FOREST,    Material.SAPLING,      (byte)0, Material.GRASS, (byte)0, Material.LEAVES,       (byte)0, 0.2   );
-		mapadd(Biome.FLOWER_FOREST,    Material.SAPLING,      (byte)2, Material.GRASS, (byte)0, Material.LEAVES,       (byte)2, 0.05  );
+		mapadd(Biome.FLOWER_FOREST,    Material.SAPLING,      (byte)0, Material.GRASS, (byte)0, Material.LEAVES,       (byte)0, 0.002 );
+		mapadd(Biome.FLOWER_FOREST,    Material.SAPLING,      (byte)2, Material.GRASS, (byte)0, Material.LEAVES,       (byte)2, 0.0005);
 		mapadd(Biome.FLOWER_FOREST,    Material.LONG_GRASS,   (byte)1, Material.GRASS, (byte)0, Material.LONG_GRASS,   (byte)1, 0.02  );
 		mapadd(Biome.FLOWER_FOREST,    Material.RED_ROSE,     (byte)0, Material.GRASS, (byte)0, Material.RED_ROSE,     (byte)0, 0.01  );
 		mapadd(Biome.FLOWER_FOREST,    Material.RED_ROSE,     (byte)2, Material.GRASS, (byte)0, Material.RED_ROSE,     (byte)2, 0.01  );
