@@ -347,7 +347,7 @@ public final class Botany extends JavaPlugin {
 					Block tb = b.getRelative(BlockFace.UP);
 					tb.setType(Material.DOUBLE_PLANT);
 					/* top half seems to be (8 & orientation of planting) - make it random */
-					setData(tb, (byte)(8 & rnd.nextInt(4)));
+					setData(tb, (byte)(8 + rnd.nextInt(4)));
 				}
 
 				if (stat_planted.get(pm.target_type.toString() + ":" + pm.target_data) == null)
