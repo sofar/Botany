@@ -277,6 +277,8 @@ public final class Botany extends JavaPlugin {
 	}
 
 	private void growAt(World world, int x, int z) {
+		BlockFace[] sides = { BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST };
+
 		Block b = world.getHighestBlockAt(x, z);
 
 		if (isProtected(b))
@@ -309,11 +311,23 @@ public final class Botany extends JavaPlugin {
 
 			/* cactus planting test */
 			if (pm.target_type == Material.CACTUS) {
-				BlockFace[] faces = { BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST };
-				for (BlockFace f: faces) {
+				for (BlockFace f: sides) {
 					if (b.getRelative(f).getType() != Material.AIR)
 						return;
 				}
+			}
+
+			/* Sugar cane planting test */
+			if (pm.target_type == Material.SUGAR_CANE_BLOCK){
+				boolean wateredge = false;
+				for (BlockFace f: sides) {
+					if (base.getRelative(f).getType() == Material.WATER) {
+						wateredge = true;
+						break;
+					}
+				}
+				if (!wateredge)
+					return;
 			}
 
 			// determine density of plant in radius
