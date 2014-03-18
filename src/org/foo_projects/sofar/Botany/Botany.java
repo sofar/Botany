@@ -512,7 +512,7 @@ command:
 								case RED_ROSE:
 								case YELLOW_FLOWER:
 								case DEAD_BUSH:
-								case SUGAR_CANE:
+								case SUGAR_CANE_BLOCK:
 									String name = mat.toString() + ":" + getSimpleData(scan);
 									if (plants.get(name) != null)
 										plants.put(name, plants.get(name) + 1);
