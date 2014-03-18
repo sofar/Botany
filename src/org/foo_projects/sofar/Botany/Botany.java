@@ -307,6 +307,15 @@ public final class Botany extends JavaPlugin {
 			if (base.getType() != pm.base_type)
 				continue;
 
+			/* cactus planting test */
+			if (pm.target_type == Material.CACTUS) {
+				BlockFace[] faces = { BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST };
+				for (BlockFace f: faces) {
+					if (b.getRelative(f).getType() != Material.AIR)
+						return;
+				}
+			}
+
 			// determine density of plant in radius
 			for (long xx = b.getX() - pm.radius; xx < b.getX() + pm.radius; xx++) {
 				for (long zz = b.getZ() - pm.radius; zz < b.getZ() + pm.radius; zz++) {
