@@ -38,6 +38,7 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 public final class Botany extends JavaPlugin {
 	private long conf_blocks = 1;
 	private int conf_ticks = 1;
+	private double conf_density = 1.0;
 
 	private boolean conf_saplings = true;
 	private boolean conf_cacti = true;
@@ -108,6 +109,11 @@ public final class Botany extends JavaPlugin {
 
 	private void mapadd(Biome biome, Material tt, byte td, Material bt, Material st, byte sd, double d) {
 		List<plantMatrix> pml;
+
+		/* adjust with global plant density slider */
+		d = d * conf_density;
+		if (d > 1.0)
+			d = 1.0;
 		/*
 		 * q this can likely be optimized more, since now we scan from -r to +r, which ends up
 		 * ~2x as much as is needed to scan at least 1/d blocks total
@@ -542,11 +548,12 @@ command:
 
 		conf_blocks = getConfig().getInt("blocks");
 		conf_ticks = getConfig().getInt("ticks");
+		conf_density = getConfig().getDouble("density");
 
 		conf_saplings = getConfig().getBoolean("saplings");
 		conf_cacti = getConfig().getBoolean("cacti");
 
-		getLogger().info("blocks: " + conf_blocks + " ticks: " + conf_ticks);
+		getLogger().info("blocks: " + conf_blocks + " ticks: " + conf_ticks + " density: " + conf_density);
 
 		List<String> worldStringList = getConfig().getStringList("worlds");
 
