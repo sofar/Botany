@@ -20,12 +20,12 @@ import org.bukkit.plugin.Plugin;
 
 public class ChunkList {
 	private List<World> worldList;
-	private Map<String, Boolean> chunkMap;
+	private Map<String, Long> chunkMap;
 	private Plugin plugin;
 	private Listener listener;
 
 	public ChunkList(Plugin plugin) {
-		this.chunkMap = new HashMap<String, Boolean>();
+		this.chunkMap = new HashMap<String, Long>();
 		this.worldList = new ArrayList<World>();
 		this.plugin = plugin;
 	}
@@ -34,7 +34,7 @@ public class ChunkList {
 		if (!worldList.contains(c.getWorld()))
 			return;
 		String key = "(" + c.getWorld().getName() + ":" + c.getX() + "," + c.getZ() + ")";
-		chunkMap.put(key,  true);
+		chunkMap.put(key, System.nanoTime());
 	}
 
 	private void unload(Chunk c) {
@@ -128,6 +128,15 @@ public class ChunkList {
 
 	public Boolean isLoaded(Location l) {
 		return isLoaded(l.getChunk());
+	}
+
+	public Boolean isLoadedLongerThan(Chunk c, long nanosec) {
+		String key = "(" + c.getWorld().getName() + ":" + c.getX() + "," + c.getZ() + ")";
+		return (System.nanoTime() - chunkMap.get(key) > nanosec);
+	}
+
+	public Boolean isLoadedLongerThan(Location l, long nanosec) {
+		return isLoadedLongerThan(l.getChunk(), nanosec);
 	}
 
 	public Chunk getRandom(World w) {
