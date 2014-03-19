@@ -281,6 +281,13 @@ public final class Botany extends JavaPlugin {
 
 		Block b = world.getHighestBlockAt(x, z);
 
+		/* do not consider planting in chunks that have just recently been
+		 * loaded, as this could flood the server with chunk load requests
+		 * and cause massive amounts of chunks to be loaeded
+		 */
+		if (!chunkList.isLoadedLongerThan(b.getLocation(), 5L * 60L * 1000000000L))
+			return;
+
 		if (isProtected(b))
 			return;
 
@@ -363,6 +370,8 @@ public final class Botany extends JavaPlugin {
 					/* top half seems to be (8 & orientation of planting) - make it random */
 					setData(tb, (byte)(8 + rnd.nextInt(4)));
 				}
+
+				//FIXME vary plant growth rate for plants randomly
 
 				if (stat_planted.get(pm.target_type.toString() + ":" + pm.target_data) == null)
 					stat_planted.put(pm.target_type.toString() + ":" + pm.target_data, (long)1);
