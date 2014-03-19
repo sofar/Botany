@@ -337,6 +337,12 @@ public final class Botany extends JavaPlugin {
 					return;
 			}
 
+			/* vary density by a small percentage each block to create some variation, otherwise
+			 * we will create regular mathematical patterns that look horrible
+			 */
+			int variation = (((x * 19) + (z * 43)) % 16) - 8; /* ranges from -8 to 7 */
+			double dv = ((2.0 * variation) / 100.0) + 1.0; /* 0.84 to 1.14 */
+
 			// determine density of plant in radius
 			for (long xx = b.getX() - pm.radius; xx < b.getX() + pm.radius; xx++) {
 				for (long zz = b.getZ() - pm.radius; zz < b.getZ() + pm.radius; zz++) {
@@ -359,7 +365,7 @@ public final class Botany extends JavaPlugin {
 			}
 
 			// The cast to double here is critical!
-			if (((double)count / (pm.radius * pm.radius)) < pm.density) {
+			if (((double)count / (pm.radius * pm.radius)) < pm.density * dv) {
 				// plant the thing
 				b.setType(pm.target_type);
 				setData(b, pm.target_data);
