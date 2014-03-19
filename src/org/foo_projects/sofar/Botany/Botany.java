@@ -377,8 +377,6 @@ public final class Botany extends JavaPlugin {
 					setData(tb, (byte)(8 + rnd.nextInt(4)));
 				}
 
-				//FIXME vary plant growth rate for plants randomly
-
 				if (stat_planted.get(pm.target_type.toString() + ":" + pm.target_data) == null)
 					stat_planted.put(pm.target_type.toString() + ":" + pm.target_data, (long)1);
 				else
