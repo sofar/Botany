@@ -1,5 +1,5 @@
 blocks: 1
-ticks: 1
+ticks: 20
 density: 1.0
 saplings: true
 cacti: true
