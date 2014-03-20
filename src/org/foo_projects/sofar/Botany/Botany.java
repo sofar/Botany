@@ -9,6 +9,7 @@ import java.util.Random;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
+import org.bukkit.TreeType;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
@@ -377,6 +378,55 @@ public final class Botany extends JavaPlugin {
 					setData(tb, (byte)(8 + rnd.nextInt(4)));
 				}
 
+				/* for testing purposes only - insta-grow those saplings */
+				if (false && (pm.target_type == Material.SAPLING)) {
+					setData(b, (byte)0);
+					b.setType(Material.AIR);
+					TreeType tt = TreeType.TREE;
+					switch(pm.target_data) {
+					case (0):
+						if (BiomeReduce(b.getBiome()) == Biome.SWAMPLAND) {
+							tt = TreeType.SWAMP;
+						} else {
+							if (Math.random() > 0.25)
+								tt = TreeType.TREE;
+							else
+								tt = TreeType.BIG_TREE;
+						}
+						break;
+					case (1):
+						if (Math.random() > 0.25)
+							tt = TreeType.REDWOOD;
+						else
+							tt = TreeType.TALL_REDWOOD;
+						break;
+					case (2):
+						if (Math.random() > 0.25)
+							tt = TreeType.BIRCH;
+						else
+							tt = TreeType.TALL_BIRCH;
+						break;
+					case (3):
+						if (Math.random() > 0.5)
+							tt = TreeType.JUNGLE_BUSH;
+						else if (Math.random() > 0.5)
+							tt = TreeType.SMALL_JUNGLE;
+						else
+							tt = TreeType.JUNGLE;
+						break;
+					case (4):
+						tt = TreeType.ACACIA;
+						break;
+					case (5):
+						tt = TreeType.DARK_OAK;
+						break;
+					default:
+						break;
+					}
+					getLogger().info("Planting a " + tt.toString());
+					b.getWorld().generateTree(b.getLocation(), tt);
+				}
+
 				if (stat_planted.get(pm.target_type.toString() + ":" + pm.target_data) == null)
 					stat_planted.put(pm.target_type.toString() + ":" + pm.target_data, (long)1);
 				else
@@ -645,7 +695,7 @@ command:
 		mapadd(Biome.TAIGA,            Material.LONG_GRASS,   (byte)2, Material.GRASS, Material.LONG_GRASS,   (byte)2, 0.03  );
 		mapadd(Biome.JUNGLE,           Material.SAPLING,      (byte)0, Material.GRASS, Material.LEAVES,       (byte)0, 0.05  );
 		mapadd(Biome.JUNGLE,           Material.SAPLING,      (byte)3, Material.GRASS, Material.LEAVES,       (byte)3, 0.05  );
-		mapadd(Biome.JUNGLE,           Material.LONG_GRASS,   (byte)1, Material.GRASS, Material.LONG_GRASS,   (byte)1, 0.01  );
+		mapadd(Biome.JUNGLE,           Material.LONG_GRASS,   (byte)1, Material.GRASS, Material.LONG_GRASS,   (byte)1, 0.02  );
 		mapadd(Biome.JUNGLE,           Material.LONG_GRASS,   (byte)2, Material.GRASS, Material.LONG_GRASS,   (byte)2, 0.01  );
 		mapadd(Biome.SAVANNA,          Material.DOUBLE_PLANT, (byte)2, Material.GRASS, Material.DOUBLE_PLANT, (byte)2, 0.01  );
 		mapadd(Biome.SAVANNA,          Material.SAPLING,      (byte)0, Material.GRASS, Material.LEAVES,       (byte)0, 0.001 );
