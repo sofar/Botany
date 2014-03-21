@@ -9,7 +9,7 @@ import java.util.Random;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
-import org.bukkit.TreeType;
+//import org.bukkit.TreeType;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
@@ -379,7 +379,8 @@ public final class Botany extends JavaPlugin {
 				}
 
 				/* for testing purposes only - insta-grow those saplings */
-				if (false && (pm.target_type == Material.SAPLING)) {
+				/*
+				if (pm.target_type == Material.SAPLING)) {
 					setData(b, (byte)0);
 					b.setType(Material.AIR);
 					TreeType tt = TreeType.TREE;
@@ -426,6 +427,7 @@ public final class Botany extends JavaPlugin {
 					getLogger().info("Planting a " + tt.toString());
 					b.getWorld().generateTree(b.getLocation(), tt);
 				}
+				*/
 
 				if (stat_planted.get(pm.target_type.toString() + ":" + pm.target_data) == null)
 					stat_planted.put(pm.target_type.toString() + ":" + pm.target_data, (long)1);
