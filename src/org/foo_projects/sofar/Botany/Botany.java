@@ -1,5 +1,10 @@
 package org.foo_projects.sofar.Botany;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -76,62 +81,11 @@ public final class Botany extends JavaPlugin {
 			density = d;
 			radius = r;
 		}
-
-		/*
-		 * if we ever get serialization to work.... :
-		 * 
-		public plantMatrix(Map<String, Object> map) {
-			target_type = Material.valueOf((String)map.get("target_type"));
-			target_data = (byte)map.get("target_data");
-			base_type = Material.valueOf((String)map.get("base_type"));
-			scan_type = Material.valueOf((String)map.get("scan_type"));
-			scan_data = (byte)map.get("scan_data");
-			density = Double.parseDouble((String)map.get("density"));
-			radius = Long.parseLong((String)map.get("radius"));
-		}
-
-		@Override
-		public Map<String, Object> serialize() {
-			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("target_type", target_type.toString());
-			map.put("Target_data", target_data);
-			map.put("base_type", base_type.toString());
-			map.put("scan_type", scan_type.toString());
-			map.put("scan_data", scan_data);
-			map.put("density", String.format("%.3f", density));
-			map.put("radius", String.format("%l", radius));
-			return map;
-		}
-		*/
 	}
 
 	// contains our biome - plant probability matrix
-	private static Map<Biome, List<plantMatrix>> matrix = new HashMap<Biome, List<plantMatrix>>();
+	private static Map<Biome, List<plantMatrix>> matrix;
 	// used to fill our plant prob. matrix at startup
-
-	private void mapadd(Biome biome, Material tt, byte td, Material bt, Material st, byte sd, double d) {
-		List<plantMatrix> pml;
-
-		/* adjust with global plant density slider */
-		d = d * conf_density;
-		if (d > 1.0)
-			d = 1.0;
-		/*
-		 * q this can likely be optimized more, since now we scan from -r to +r, which ends up
-		 * ~2x as much as is needed to scan at least 1/d blocks total
-		 */
-		long r = (long)Math.sqrt(0.5 / d);
-
-		plantMatrix pm = new plantMatrix(tt, td, bt, st, sd, d, r);
-
-		if (matrix.containsKey(biome)) {
-			pml = matrix.get(biome);
-		} else {
-			pml = new ArrayList<plantMatrix>();
-		}
-		pml.add(pm);
-		matrix.put(biome, pml);
-	}
 
 	private Biome BiomeReduce(Biome b) {
 		switch (b) {
@@ -680,65 +634,109 @@ command:
 		conf_protect = getConfig().getBoolean("protect");
 		getLogger().info("protection is " + (conf_protect ? "on" : "off"));
 
-		/*
-		 * long array of plants for each biome.
-		 */
-		mapadd(Biome.SWAMPLAND,        Material.SAPLING,      (byte)0, Material.GRASS, Material.LEAVES,       (byte)0, 0.001 );
-		mapadd(Biome.SWAMPLAND,        Material.LONG_GRASS,   (byte)1, Material.GRASS, Material.LONG_GRASS,   (byte)1, 0.05  );
-		mapadd(Biome.FOREST,           Material.SAPLING,      (byte)0, Material.GRASS, Material.LEAVES,       (byte)0, 0.002 );
-		mapadd(Biome.FOREST,           Material.SAPLING,      (byte)2, Material.GRASS, Material.LEAVES,       (byte)2, 0.001 );
-		mapadd(Biome.FOREST,           Material.LONG_GRASS,   (byte)1, Material.GRASS, Material.LONG_GRASS,   (byte)1, 0.03  );
-		mapadd(Biome.BIRCH_FOREST,     Material.SAPLING,      (byte)2, Material.GRASS, Material.LEAVES,       (byte)2, 0.005 );
-		mapadd(Biome.BIRCH_FOREST,     Material.LONG_GRASS,   (byte)1, Material.GRASS, Material.LONG_GRASS,   (byte)1, 0.03  );
-		mapadd(Biome.TAIGA,            Material.DOUBLE_PLANT, (byte)3, Material.GRASS, Material.DOUBLE_PLANT, (byte)3, 0.01  );
-		mapadd(Biome.TAIGA,            Material.SAPLING,      (byte)1, Material.GRASS, Material.LEAVES,       (byte)1, 0.003 ); // no mega spruces!
-		mapadd(Biome.TAIGA,            Material.LONG_GRASS,   (byte)1, Material.GRASS, Material.LONG_GRASS,   (byte)1, 0.01  );
-		mapadd(Biome.TAIGA,            Material.LONG_GRASS,   (byte)2, Material.GRASS, Material.LONG_GRASS,   (byte)2, 0.03  );
-		mapadd(Biome.JUNGLE,           Material.SAPLING,      (byte)0, Material.GRASS, Material.LEAVES,       (byte)0, 0.05  );
-		mapadd(Biome.JUNGLE,           Material.SAPLING,      (byte)3, Material.GRASS, Material.LEAVES,       (byte)3, 0.05  );
-		mapadd(Biome.JUNGLE,           Material.LONG_GRASS,   (byte)1, Material.GRASS, Material.LONG_GRASS,   (byte)1, 0.02  );
-		mapadd(Biome.JUNGLE,           Material.LONG_GRASS,   (byte)2, Material.GRASS, Material.LONG_GRASS,   (byte)2, 0.01  );
-		mapadd(Biome.SAVANNA,          Material.DOUBLE_PLANT, (byte)2, Material.GRASS, Material.DOUBLE_PLANT, (byte)2, 0.01  );
-		mapadd(Biome.SAVANNA,          Material.SAPLING,      (byte)0, Material.GRASS, Material.LEAVES,       (byte)0, 0.001 );
-		mapadd(Biome.SAVANNA,          Material.SAPLING,      (byte)4, Material.GRASS, Material.LEAVES_2,     (byte)0, 0.001 );
-		mapadd(Biome.SAVANNA,          Material.LONG_GRASS,   (byte)1, Material.GRASS, Material.LONG_GRASS,   (byte)1, 0.04  );
-		mapadd(Biome.MESA,             Material.CACTUS,       (byte)0, Material.SAND,  Material.CACTUS,       (byte)0, 0.002 );
-		mapadd(Biome.MESA,             Material.SAPLING,      (byte)0, Material.GRASS, Material.LEAVES,       (byte)0, 0.002 );
-		mapadd(Biome.MESA,             Material.DEAD_BUSH,    (byte)0, Material.SAND,  Material.DEAD_BUSH,    (byte)0, 0.01  );
-		mapadd(Biome.MESA,             Material.DEAD_BUSH,    (byte)0, Material.STAINED_CLAY, Material.DEAD_BUSH, (byte)0, 0.01 );
-		mapadd(Biome.MESA,             Material.DEAD_BUSH,    (byte)0, Material.HARD_CLAY,    Material.DEAD_BUSH, (byte)0, 0.01 );
-		mapadd(Biome.MESA,             Material.LONG_GRASS,   (byte)1, Material.GRASS, Material.LONG_GRASS,   (byte)1, 0.01  );
-		mapadd(Biome.DESERT,           Material.CACTUS,       (byte)0, Material.SAND,  Material.CACTUS,       (byte)0, 0.002 );
-		mapadd(Biome.DESERT,           Material.DEAD_BUSH,    (byte)0, Material.SAND,  Material.DEAD_BUSH,    (byte)0, 0.002 );
-		mapadd(Biome.RIVER,            Material.DOUBLE_PLANT, (byte)2, Material.GRASS, Material.DOUBLE_PLANT, (byte)2, 0.001 );
-		mapadd(Biome.RIVER,            Material.DOUBLE_PLANT, (byte)3, Material.GRASS, Material.DOUBLE_PLANT, (byte)3, 0.002 );
-		mapadd(Biome.RIVER,            Material.LONG_GRASS,   (byte)1, Material.GRASS, Material.LONG_GRASS,   (byte)1, 0.01  );
-		mapadd(Biome.EXTREME_HILLS,    Material.SAPLING,      (byte)0, Material.GRASS, Material.LEAVES,       (byte)0, 0.0001);
-		mapadd(Biome.EXTREME_HILLS,    Material.SAPLING,      (byte)1, Material.GRASS, Material.LEAVES,       (byte)1, 0.0001);
-		mapadd(Biome.EXTREME_HILLS,    Material.LONG_GRASS,   (byte)1, Material.GRASS, Material.LONG_GRASS,   (byte)1, 0.02  );
-		mapadd(Biome.ROOFED_FOREST,    Material.SAPLING,      (byte)5, Material.GRASS, Material.LEAVES_2,     (byte)1, 0.006 ); // won't work!
-		mapadd(Biome.ROOFED_FOREST,    Material.LONG_GRASS,   (byte)1, Material.GRASS, Material.LONG_GRASS,   (byte)1, 0.01  );
-		mapadd(Biome.ICE_PLAINS,       Material.SAPLING,      (byte)1, Material.GRASS, Material.LEAVES,       (byte)1, 0.0001);
-		mapadd(Biome.ICE_PLAINS,       Material.SAPLING,      (byte)2, Material.GRASS, Material.LEAVES,       (byte)2, 0.0001);
-		mapadd(Biome.ICE_PLAINS,       Material.LONG_GRASS,   (byte)1, Material.GRASS, Material.LONG_GRASS,   (byte)1, 0.03  );
-		mapadd(Biome.PLAINS,           Material.LONG_GRASS,   (byte)1, Material.GRASS, Material.LONG_GRASS,   (byte)1, 0.25  );
-		mapadd(Biome.SUNFLOWER_PLAINS, Material.DOUBLE_PLANT, (byte)0, Material.GRASS, Material.DOUBLE_PLANT, (byte)0, 0.01  );
-		mapadd(Biome.SUNFLOWER_PLAINS, Material.DOUBLE_PLANT, (byte)2, Material.GRASS, Material.DOUBLE_PLANT, (byte)2, 0.01  );
-		mapadd(Biome.SUNFLOWER_PLAINS, Material.LONG_GRASS,   (byte)1, Material.GRASS, Material.LONG_GRASS,   (byte)1, 0.25  );
-		mapadd(Biome.FLOWER_FOREST,    Material.DOUBLE_PLANT, (byte)1, Material.GRASS, Material.DOUBLE_PLANT, (byte)1, 0.002 );
-		mapadd(Biome.FLOWER_FOREST,    Material.DOUBLE_PLANT, (byte)4, Material.GRASS, Material.DOUBLE_PLANT, (byte)4, 0.002 );
-		mapadd(Biome.FLOWER_FOREST,    Material.DOUBLE_PLANT, (byte)5, Material.GRASS, Material.DOUBLE_PLANT, (byte)5, 0.002 );
-		mapadd(Biome.FLOWER_FOREST,    Material.SAPLING,      (byte)0, Material.GRASS, Material.LEAVES,       (byte)0, 0.002 );
-		mapadd(Biome.FLOWER_FOREST,    Material.SAPLING,      (byte)2, Material.GRASS, Material.LEAVES,       (byte)2, 0.0005);
-		mapadd(Biome.FLOWER_FOREST,    Material.LONG_GRASS,   (byte)1, Material.GRASS, Material.LONG_GRASS,   (byte)1, 0.02  );
-		mapadd(Biome.FLOWER_FOREST,    Material.RED_ROSE,     (byte)0, Material.GRASS, Material.RED_ROSE,     (byte)0, 0.01  );
-		mapadd(Biome.FLOWER_FOREST,    Material.RED_ROSE,     (byte)2, Material.GRASS, Material.RED_ROSE,     (byte)2, 0.01  );
-		mapadd(Biome.FLOWER_FOREST,    Material.RED_ROSE,     (byte)3, Material.GRASS, Material.RED_ROSE,     (byte)3, 0.01  );
-		mapadd(Biome.FLOWER_FOREST,    Material.RED_ROSE,     (byte)4, Material.GRASS, Material.RED_ROSE,     (byte)4, 0.01  );
-		mapadd(Biome.FLOWER_FOREST,    Material.RED_ROSE,     (byte)5, Material.GRASS, Material.RED_ROSE,     (byte)5, 0.01  );
-		mapadd(Biome.FLOWER_FOREST,    Material.RED_ROSE,     (byte)6, Material.GRASS, Material.RED_ROSE,     (byte)6, 0.01  );
-		mapadd(Biome.FLOWER_FOREST,    Material.RED_ROSE,     (byte)7, Material.GRASS, Material.RED_ROSE,     (byte)7, 0.01  );
-		mapadd(Biome.FLOWER_FOREST,    Material.RED_ROSE,     (byte)8, Material.GRASS, Material.RED_ROSE,     (byte)8, 0.002 );
+		/* read plants.csv */
+		matrix = new HashMap<Biome, List<plantMatrix>>();
+		BufferedReader r;
+		long linecount = 0;
+		try {
+			File cf = new File(getDataFolder(), "plants.csv");
+			if (!cf.exists()) {
+				saveResource("plants.csv", false);
+				cf = new File(getDataFolder(), "plants.csv");
+			}
+			r = new BufferedReader(new FileReader(cf));
+			long lineno = 0;
+			while (true) {
+				String line = r.readLine();
+				lineno++;
+				if (line == null)
+					break;
+
+				if (line.contains("#"))
+					continue;
+
+				String[] split = line.split(",");
+
+				if (split.length == 1)
+					continue;
+
+				if (split.length != 5) {
+					getLogger().info("Error parsing plants.csv at line " + lineno);
+					continue;
+				}
+
+				Biome b;
+				try {
+					b = Biome.valueOf(split[0]);
+				} catch (IllegalArgumentException e) {
+					getLogger().info("Invalid Biome name \"" + split[0] + "\" at line " + lineno);
+					continue;
+				}
+
+				String target[] = split[1].split(":");
+				if (target.length != 2) {
+					getLogger().info("Invalid target entry \"" + split[1] + "\" at line " + lineno);
+					continue;
+				}
+				Material tt;
+				byte td;
+				try {
+					tt = Material.valueOf(target[0]);
+				} catch (IllegalArgumentException e) {
+					getLogger().info("Invalid target Material name \"" + target[0] + "\" at line " + lineno);
+					continue;
+				}
+				td = Byte.parseByte(target[1]);
+
+				Material bt;
+				try {
+					bt = Material.valueOf(split[2]);
+				} catch (IllegalArgumentException e) {
+					getLogger().info("Invalid base Material name \"" + split[2] + "\" at line " + lineno);
+					continue;
+				}
+
+				String scan[] = split[3].split(":");
+				if (scan.length != 2) {
+					getLogger().info("Invalid scan entry \"" + split[3] + "\" at line " + lineno);
+					continue;
+				}
+				Material st;
+				byte sd;
+				try {
+					st = Material.valueOf(scan[0]);
+				} catch (IllegalArgumentException e) {
+					getLogger().info("Invalid scan Material name \"" + scan[0] + "\" at line " + lineno);
+					continue;
+				}
+				sd = Byte.parseByte(scan[1]);
+
+				double d = Double.parseDouble(split[4]) * conf_density;
+				if (d > 1.0)
+					d = 1.0;
+
+				plantMatrix pm = new plantMatrix(tt, td, bt, st, sd, d,
+						(long)Math.sqrt(0.5 / Double.parseDouble(split[4]))
+						);
+
+				List<plantMatrix> pml;
+				if (matrix.containsKey(b)) {
+					pml = matrix.get(b);
+				} else {
+					pml = new ArrayList<plantMatrix>();
+				}
+				pml.add(pm);
+				matrix.put(b, pml);
+
+				linecount++;
+			}
+			r.close();
+		} catch (FileNotFoundException e) {
+			getLogger().info("Could not find a default or usable custom plants.csv! No plants will be planted!");
+		} catch (IOException e) {
+			getLogger().info("Error reading plants.csv data! No plants will be planted!");
+		}
+		getLogger().info("Read " + linecount + " plant entries from plants.csv");
 
 		getCommand("botany").setExecutor(new BotanyCommand());
 
