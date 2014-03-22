@@ -9,7 +9,7 @@ import java.util.Random;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
-//import org.bukkit.TreeType;
+import org.bukkit.TreeType;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
@@ -43,6 +43,7 @@ public final class Botany extends JavaPlugin {
 
 	private boolean conf_saplings = true;
 	private boolean conf_cacti = true;
+	private boolean conf_trees = true;
 
 	private boolean conf_protect = true;
 
@@ -378,9 +379,8 @@ public final class Botany extends JavaPlugin {
 					setData(tb, (byte)(8 + rnd.nextInt(4)));
 				}
 
-				/* for testing purposes only - insta-grow those saplings */
-				/*
-				if (pm.target_type == Material.SAPLING)) {
+				/* grow fullsize trees instead of saplings */
+				if (conf_trees && (pm.target_type == Material.SAPLING)) {
 					setData(b, (byte)0);
 					b.setType(Material.AIR);
 					TreeType tt = TreeType.TREE;
@@ -424,10 +424,8 @@ public final class Botany extends JavaPlugin {
 					default:
 						break;
 					}
-					getLogger().info("Planting a " + tt.toString());
 					b.getWorld().generateTree(b.getLocation(), tt);
 				}
-				*/
 
 				if (stat_planted.get(pm.target_type.toString() + ":" + pm.target_data) == null)
 					stat_planted.put(pm.target_type.toString() + ":" + pm.target_data, (long)1);
@@ -641,6 +639,7 @@ command:
 
 		conf_saplings = getConfig().getBoolean("saplings");
 		conf_cacti = getConfig().getBoolean("cacti");
+		conf_trees = getConfig().getBoolean("trees");
 
 		getLogger().info("blocks: " + conf_blocks + " ticks: " + conf_ticks + " density: " + conf_density);
 
