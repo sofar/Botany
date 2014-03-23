@@ -505,9 +505,9 @@ command:
 						break;
 					case "stats":
 						msg = "Planting statistics: ";
-						msg += "(Chunks loaded: " + chunkList.size() + ")\n";
+						msg += "(Chunks loaded: " + chunkList.size() + ")";
 						for (String m: stat_planted.keySet())
-							msg += m + " - " + stat_planted.get(m) + "\n";
+							msg += "\n" + m + " - " + stat_planted.get(m);
 						break;
 					case "scan":
 						if (!(sender instanceof Player)) {
@@ -557,9 +557,9 @@ command:
 							}
 						}
 						msg = "Scan results:\n";
-						msg += "Biome: " + biome.toString() + " Area: " + area + " range: " + 100 + "\n";
+						msg += "Biome: " + biome.toString() + " Area: " + area + " range: " + 100;
 						for (String name: plants.keySet())
-							msg += biome.toString() + "," + name + "," + plants.get(name) + "," + (String.format("%.3f",  (float)plants.get(name) / (float)area)) + "\n";
+							msg += "\n" + biome.toString() + "," + name + "," + plants.get(name) + "," + (String.format("%.3f",  (float)plants.get(name) / (float)area));
 						break;
 					case "help":
 					default:
