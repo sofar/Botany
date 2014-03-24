@@ -276,6 +276,11 @@ public final class Botany extends JavaPlugin {
 			if (base.getType() != pm.base_type)
 				continue;
 
+			/* if DOUBLE_PLANT, must have 2 air spaces */
+			if (pm.target_type == Material.DOUBLE_PLANT)
+				if (b.getRelative(BlockFace.UP).getType() != Material.AIR)
+						return;
+
 			/* cactus planting test */
 			if (pm.target_type == Material.CACTUS) {
 				for (BlockFace f: sides) {
