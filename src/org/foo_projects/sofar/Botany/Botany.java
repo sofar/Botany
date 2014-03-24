@@ -261,6 +261,12 @@ public final class Botany extends JavaPlugin {
 			pml = matrix.get(BiomeReduce(b.getBiome()));
 		}
 
+		/* We can plant under existing trees */
+		while ((b.getRelative(BlockFace.DOWN).getType() == Material.LEAVES) ||
+				(b.getRelative(BlockFace.DOWN).getType() == Material.LEAVES_2) ||
+						(b.getRelative(BlockFace.DOWN).getType() == Material.AIR))
+			b = b.getRelative(BlockFace.DOWN);
+
 		for (plantMatrix pm: pml) {
 			int count = 0;
 
