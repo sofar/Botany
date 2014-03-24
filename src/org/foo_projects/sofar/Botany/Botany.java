@@ -252,10 +252,14 @@ public final class Botany extends JavaPlugin {
 			return;
 
 		// do we plant in this biome?
-		if (!matrix.containsKey(BiomeReduce(b.getBiome())))
-			return;
-
-		List<plantMatrix> pml = matrix.get(BiomeReduce(b.getBiome()));
+		List<plantMatrix> pml;
+		if (matrix.containsKey(b.getBiome())) {
+			pml = matrix.get(b.getBiome());
+		} else {
+			if (!matrix.containsKey(BiomeReduce(b.getBiome())))
+				return;
+			pml = matrix.get(BiomeReduce(b.getBiome()));
+		}
 
 		for (plantMatrix pm: pml) {
 			int count = 0;
