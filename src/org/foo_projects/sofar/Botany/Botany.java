@@ -241,7 +241,7 @@ public final class Botany extends JavaPlugin {
 		 * loaded, as this could flood the server with chunk load requests
 		 * and cause massive amounts of chunks to be loaeded
 		 */
-		if (!chunkList.isLoadedLongerThan(b.getLocation(), 5L * 60L * 1000000000L))
+		if (!chunkList.isLoadedLongerThan(b.getLocation(), 5L * 3L * 1000000000L))
 			return;
 
 		if (isProtected(b))
@@ -318,17 +318,17 @@ public final class Botany extends JavaPlugin {
 			// determine density of plant in radius
 			for (long xx = b.getX() - pm.radius; xx < b.getX() + pm.radius; xx++) {
 				for (long zz = b.getZ() - pm.radius; zz < b.getZ() + pm.radius; zz++) {
-					count++;
-
 					Block h = world.getHighestBlockAt((int)xx, (int)zz);
-
-					/* don't scan the top air block */
-					while (h.getType() == Material.AIR)
-						h = h.getRelative(BlockFace.DOWN);
 
 					/* make sure we don't scan outside our biome */
 					if (h.getBiome() != b.getBiome())
 						continue;
+
+					count++;
+
+					/* don't scan the top air block */
+					while (h.getType() == Material.AIR)
+						h = h.getRelative(BlockFace.DOWN);
 
 					/* if we're not scanning for leaves, lower scan to beneath any */
 					if ((pm.scan_type != Material.LEAVES) && (pm.scan_type != Material.LEAVES_2)) {
@@ -343,7 +343,7 @@ public final class Botany extends JavaPlugin {
 			}
 
 			// The cast to double here is critical!
-			if ((double)((double)found / (double)count) < pm.density * dv) {
+			if (((double)found / (double)count) < pm.density * dv) {
 				// plant the thing
 				b.setType(pm.target_type);
 				setData(b, pm.target_data);
@@ -760,7 +760,7 @@ command:
 
 				/* finally, derive radius from density with a sane minimum */
 				plantMatrix pm = new plantMatrix(tt, td, bt, st, sd, d,
-						Math.min(8, (long)Math.sqrt(0.5 / Double.parseDouble(split[4])))
+						Math.max(8, (long)Math.sqrt(0.5 / Double.parseDouble(split[4])))
 						);
 
 				List<plantMatrix> pml;
