@@ -764,7 +764,7 @@ command:
 
 				/* finally, derive radius from density with a sane minimum */
 				plantMatrix pm = new plantMatrix(tt, td, bt, st, sd, d,
-						Math.max(8, (long)Math.sqrt(0.5 / Double.parseDouble(split[4])))
+						Math.max(8, (long)Math.sqrt(1 / Double.parseDouble(split[4])))
 						);
 
 				List<plantMatrix> pml;
