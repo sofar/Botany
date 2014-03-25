@@ -268,7 +268,8 @@ public final class Botany extends JavaPlugin {
 			b = b.getRelative(BlockFace.DOWN);
 
 		for (plantMatrix pm: pml) {
-			int count = 0;
+			long count = 0;
+			long found = 0;
 
 			// are these plant types enabled?
 			if (pm.target_type == Material.SAPLING && (!conf_saplings))
@@ -319,6 +320,10 @@ public final class Botany extends JavaPlugin {
 				for (long zz = b.getZ() - pm.radius; zz < b.getZ() + pm.radius; zz++) {
 					Block h = world.getHighestBlockAt((int)xx, (int)zz);
 
+					/* make sure we don't scan outside our biome */
+					if (h.getBiome() != b.getBiome())
+						continue;
+
 					/* if we're not scanning for leaves, lower scan to beneath any */
 					if ((pm.scan_type != Material.LEAVES) && (pm.scan_type != Material.LEAVES_2)) {
 						while (h.getType() == Material.LEAVES || h.getType() == Material.LEAVES_2 || h.getRelative(BlockFace.DOWN).getType() == Material.AIR)
@@ -327,12 +332,12 @@ public final class Botany extends JavaPlugin {
 
 					if (((h.getType() == pm.scan_type) && (getSimpleData(h) == pm.scan_data)) ||
 						((h.getType() == pm.target_type) && (getSimpleData(h) == pm.target_data)))
-						count++;
+						found++;
 				}
 			}
 
 			// The cast to double here is critical!
-			if (((double)count / (pm.radius * pm.radius)) < pm.density * dv) {
+			if ((double)(found / count) < pm.density * dv) {
 				// plant the thing
 				b.setType(pm.target_type);
 				setData(b, pm.target_data);
