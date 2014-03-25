@@ -554,6 +554,27 @@ command:
 
 								area++;
 
+								/* scan under foliage */
+								if ((scan.getType() == Material.LEAVES) || (scan.getType() == Material.LEAVES_2)) {
+									/* first, add this plant type to the scan results */
+									Material mat = scan.getType();
+									String name = mat.toString() + ":" + getSimpleData(scan);
+									if (plants.get(name) != null)
+										plants.put(name, plants.get(name) + 1);
+									else
+										plants.put(name, (long)1);
+
+									/* second, scan further below */
+									while (true) {
+										Material m = scan.getRelative(BlockFace.DOWN).getType();
+										if ((m == Material.AIR) || (m == Material.LEAVES) || (m == Material.LEAVES_2)) {
+											scan = scan.getRelative(BlockFace.DOWN);
+										} else {
+											break;
+										}
+									}
+								}
+
 								Material mat = scan.getType();
 								switch (mat) {
 								case LONG_GRASS:
