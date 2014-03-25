@@ -372,7 +372,7 @@ public final class Botany extends JavaPlugin {
 						}
 						break;
 					case (1):
-						if (Math.random() > 0.25)
+						if (pm.density < 0.25)
 							tt = TreeType.REDWOOD;
 						else
 							tt = TreeType.TALL_REDWOOD;
