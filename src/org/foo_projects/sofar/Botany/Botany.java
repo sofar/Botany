@@ -241,7 +241,7 @@ public final class Botany extends JavaPlugin {
 		 * loaded, as this could flood the server with chunk load requests
 		 * and cause massive amounts of chunks to be loaeded
 		 */
-		if (!chunkList.isLoadedLongerThan(b.getLocation(), 5L * 3L * 1000000000L))
+		if (!chunkList.isLoadedLongerThan(b.getLocation(), 5L * 60L * 1000000000L))
 			return;
 
 		if (isProtected(b))
