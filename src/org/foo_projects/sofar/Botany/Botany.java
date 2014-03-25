@@ -318,15 +318,11 @@ public final class Botany extends JavaPlugin {
 			for (long xx = b.getX() - pm.radius; xx < b.getX() + pm.radius; xx++) {
 				for (long zz = b.getZ() - pm.radius; zz < b.getZ() + pm.radius; zz++) {
 					Block h = world.getHighestBlockAt((int)xx, (int)zz);
+
 					/* if we're not scanning for leaves, lower scan to beneath any */
 					if ((pm.scan_type != Material.LEAVES) && (pm.scan_type != Material.LEAVES_2)) {
-						while (h.getType() == Material.LEAVES || h.getType() == Material.LEAVES_2)
+						while (h.getType() == Material.LEAVES || h.getType() == Material.LEAVES_2 || h.getRelative(BlockFace.DOWN).getType() == Material.AIR)
 							h = h.getRelative(BlockFace.DOWN);
-					}
-
-					/* transparent block or under a tree */
-					while (h.getType() == Material.AIR) {
-						h = h.getRelative(BlockFace.DOWN);
 					}
 
 					if (((h.getType() == pm.scan_type) && (getSimpleData(h) == pm.scan_data)) ||
