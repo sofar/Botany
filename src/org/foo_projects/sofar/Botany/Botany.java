@@ -318,7 +318,13 @@ public final class Botany extends JavaPlugin {
 			// determine density of plant in radius
 			for (long xx = b.getX() - pm.radius; xx < b.getX() + pm.radius; xx++) {
 				for (long zz = b.getZ() - pm.radius; zz < b.getZ() + pm.radius; zz++) {
+					count++;
+
 					Block h = world.getHighestBlockAt((int)xx, (int)zz);
+
+					/* don't scan the top air block */
+					while (h.getType() == Material.AIR)
+						h = h.getRelative(BlockFace.DOWN);
 
 					/* make sure we don't scan outside our biome */
 					if (h.getBiome() != b.getBiome())
@@ -337,7 +343,7 @@ public final class Botany extends JavaPlugin {
 			}
 
 			// The cast to double here is critical!
-			if ((double)(found / count) < pm.density * dv) {
+			if ((double)((double)found / (double)count) < pm.density * dv) {
 				// plant the thing
 				b.setType(pm.target_type);
 				setData(b, pm.target_data);
