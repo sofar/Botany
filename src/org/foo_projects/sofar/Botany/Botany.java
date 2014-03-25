@@ -440,7 +440,7 @@ public final class Botany extends JavaPlugin {
 					"/botany blocks <int> - set number of block attempts per cycle\n" +
 					"/botany enable <world> - enable for world\n" +
 					"/botany disable <world> - enable for world\n" +
-					"/botany scan - scan the area in your current biome for plants";
+					"/botany scan [radius] - scan the area in your current biome for plants";
 
 command:
 			if (split.length >= 1) {
@@ -537,6 +537,10 @@ command:
 							break;
 						}
 
+						int radius = 100;
+						if (split.length == 2)
+							radius = Math.max(8, Integer.parseInt(split[1]));
+
 						Player player = (Player)sender;
 						Block block = player.getLocation().getBlock();
 						Biome biome = block.getBiome();
@@ -544,8 +548,8 @@ command:
 						long area = 0;
 						Map <String,Long> plants = new HashMap<String,Long>();
 
-						for (int x = block.getX() - 100; x < block.getX() + 100; x++) {
-							for (int z = block.getZ() - 100; z < block.getZ() + 100; z++) {
+						for (int x = block.getX() - radius; x < block.getX() + radius; x++) {
+							for (int z = block.getZ() - radius; z < block.getZ() + radius; z++) {
 								Block scan = world.getHighestBlockAt(x, z);
 								if (!scan.getBiome().equals(biome))
 									continue;
@@ -600,7 +604,7 @@ command:
 							}
 						}
 						msg = "Scan results:\n";
-						msg += "Biome: " + biome.toString() + " Area: " + area + " range: " + 100;
+						msg += "Biome: " + biome.toString() + " Area: " + area + " range: " + radius;
 						for (String name: plants.keySet())
 							msg += "\n" + biome.toString() + "," + name + "," + plants.get(name) + "," + (String.format("%.3f",  (float)plants.get(name) / (float)area));
 						break;
