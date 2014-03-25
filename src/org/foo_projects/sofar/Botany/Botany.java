@@ -737,8 +737,9 @@ command:
 				if (d > 1.0)
 					d = 1.0;
 
+				/* finally, derive radius from density with a sane minimum */
 				plantMatrix pm = new plantMatrix(tt, td, bt, st, sd, d,
-						(long)Math.sqrt(0.5 / Double.parseDouble(split[4]))
+						Math.min(8, (long)Math.sqrt(0.5 / Double.parseDouble(split[4])))
 						);
 
 				List<plantMatrix> pml;
