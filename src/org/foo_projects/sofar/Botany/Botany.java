@@ -233,6 +233,7 @@ public final class Botany extends JavaPlugin {
 	}
 
 	private void growAt(World world, int x, int z) {
+		boolean canopy = false;
 		BlockFace[] sides = { BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST };
 
 		Block b = world.getHighestBlockAt(x, z);
@@ -264,8 +265,10 @@ public final class Botany extends JavaPlugin {
 		/* We can plant under existing trees */
 		while ((b.getRelative(BlockFace.DOWN).getType() == Material.LEAVES) ||
 				(b.getRelative(BlockFace.DOWN).getType() == Material.LEAVES_2) ||
-						(b.getRelative(BlockFace.DOWN).getType() == Material.AIR))
+						(b.getRelative(BlockFace.DOWN).getType() == Material.AIR)) {
 			b = b.getRelative(BlockFace.DOWN);
+			canopy = true;
+		}
 
 		for (plantMatrix pm: pml) {
 			long count = 0;
@@ -275,6 +278,13 @@ public final class Botany extends JavaPlugin {
 			if (pm.target_type == Material.SAPLING && (!conf_saplings))
 				continue;
 			if (pm.target_type == Material.CACTUS && (!conf_cacti))
+				continue;
+
+			/* Don't plant saplings underneath any form of canopy - this reduces the problem if
+			 * having to measure space around saplings much as under an open sky it will be
+			 * easier for the saplings to grow
+			 * */
+			if ((canopy) && (pm.target_type == Material.SAPLING))
 				continue;
 
 			Block base = b.getRelative(BlockFace.DOWN);
