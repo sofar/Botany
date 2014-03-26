@@ -309,6 +309,10 @@ public final class Botany extends JavaPlugin {
 					return;
 			}
 
+			/* lower plant density slowly by height - 25% each 16 blocks above sea level */
+			double density = pm.density * Math.pow(0.75, ((b.getY() - b.getWorld().getSeaLevel()) / 16));
+			long radius = (long)((double)pm.radius / Math.pow(0.75, ((b.getY() - b.getWorld().getSeaLevel()) / 16)));
+
 			/* vary density by a small percentage each block to create some variation, otherwise
 			 * we will create regular mathematical patterns that look horrible
 			 */
@@ -316,8 +320,8 @@ public final class Botany extends JavaPlugin {
 			double dv = ((2.0 * variation) / 100.0) + 1.0; /* 0.84 to 1.14 */
 
 			// determine density of plant in radius
-			for (long xx = b.getX() - pm.radius; xx < b.getX() + pm.radius; xx++) {
-				for (long zz = b.getZ() - pm.radius; zz < b.getZ() + pm.radius; zz++) {
+			for (long xx = b.getX() - radius; xx < b.getX() + radius; xx++) {
+				for (long zz = b.getZ() - radius; zz < b.getZ() + radius; zz++) {
 					Block h = world.getHighestBlockAt((int)xx, (int)zz);
 
 					/* make sure we don't scan outside our biome */
@@ -343,7 +347,7 @@ public final class Botany extends JavaPlugin {
 			}
 
 			// The cast to double here is critical!
-			if (((double)found / (double)count) < pm.density * dv) {
+			if (((double)found / (double)count) < density * dv) {
 				// plant the thing
 				b.setType(pm.target_type);
 				setData(b, pm.target_data);
