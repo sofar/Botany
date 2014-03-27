@@ -13,6 +13,11 @@
 #
 # empty lines and lines with a # in any location are skipped
 
+# this next line help to determine if this file may be out of date - it will notify
+# you on the console if this file needs upgrading. If you have custom modifications
+# and/or do not want to be notified, just delete this line.
+VERSION,2,,,
+
 BIRCH_FOREST,SAPLING:2,GRASS,LEAVES:2,0.4
 BIRCH_FOREST,LONG_GRASS:1,GRASS,LONG_GRASS:1,0.03000
 MESA,CACTUS:0,SAND,CACTUS:0,0.00200

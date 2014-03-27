@@ -52,6 +52,8 @@ public final class Botany extends JavaPlugin {
 
 	private boolean conf_protect = true;
 
+	private final int conf_plants_csv_version = 2;
+
 	private boolean have_factions = false;
 	private boolean have_factions_old = false;
 	private boolean have_towny = false;
@@ -270,6 +272,7 @@ public final class Botany extends JavaPlugin {
 			canopy = true;
 		}
 
+nextplant:
 		for (plantMatrix pm: pml) {
 			long count = 0;
 			long found = 0;
@@ -296,13 +299,13 @@ public final class Botany extends JavaPlugin {
 			/* if DOUBLE_PLANT, must have 2 air spaces */
 			if (pm.target_type == Material.DOUBLE_PLANT)
 				if (b.getRelative(BlockFace.UP).getType() != Material.AIR)
-						return;
+						continue nextplant;
 
 			/* cactus planting test */
 			if (pm.target_type == Material.CACTUS) {
 				for (BlockFace f: sides) {
 					if (b.getRelative(f).getType() != Material.AIR)
-						return;
+						continue nextplant;
 				}
 			}
 
@@ -316,7 +319,7 @@ public final class Botany extends JavaPlugin {
 					}
 				}
 				if (!wateredge)
-					return;
+					continue;
 			}
 
 			/* lower plant density slowly by height - 25% each 16 blocks above sea level */
@@ -349,6 +352,16 @@ public final class Botany extends JavaPlugin {
 						while (h.getType() == Material.LEAVES || h.getType() == Material.LEAVES_2 || h.getRelative(BlockFace.DOWN).getType() == Material.AIR)
 							h = h.getRelative(BlockFace.DOWN);
 					}
+
+					/* cop-out - prevent planting saplings too soon after each other.
+					 * If anywhere there is an ungrown sapling nearby, just don't plant
+					 * another one nearby.
+					 * There is a small risk that that sapling won't ever grow, so we
+					 * may just want to figure out a way to break the cycle like PwnPlantgrowth does,
+					 * which essentially kills saplings after a while (makes them dead bushes) */
+					if ((pm.target_type == Material.SAPLING) && (h.getType() == Material.SAPLING) &&
+							(pm.target_data == getSimpleData(h)))
+						continue nextplant;
 
 					if (((h.getType() == pm.scan_type) && (getSimpleData(h) == pm.scan_data)) ||
 						((h.getType() == pm.target_type) && (getSimpleData(h) == pm.target_data)))
@@ -723,6 +736,15 @@ command:
 
 				if (split.length != 5) {
 					getLogger().info("Error parsing plants.csv at line " + lineno);
+					continue;
+				}
+
+				if (split[0].equals("VERSION")) {
+					if (!split[1].equals(String.valueOf(conf_plants_csv_version))) {
+						getLogger().info("The file \"plants.csv\" in the plugins folder is an outdated version");
+						getLogger().info("Either remove the file and let the plugin install a new version for you, or");
+						getLogger().info("fix it up manually.");
+					}
 					continue;
 				}
 

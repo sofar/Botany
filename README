@@ -19,8 +19,5 @@ We collect and analyze plant data from generated default worlds, and
 determine base plant levels for each biome. This data is converted into
 a plant-density-biome matrix that is implemented in the code itself.
 
-Data sample sets are collected in the data/ folder in the source code,
-and contain biome,plant_type,density_average values line-by-line
-
 Usage information is posted on the dev.bukkit.org/bukkit-plugins/botany
 page.
