@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -263,6 +264,9 @@ public final class Botany extends JavaPlugin {
 				return;
 			pml = matrix.get(BiomeReduce(b.getBiome()));
 		}
+
+		/* randomize which plant get picked first */
+		Collections.shuffle(pml);
 
 		/* We can plant under existing trees */
 		while ((b.getRelative(BlockFace.DOWN).getType() == Material.LEAVES) ||
