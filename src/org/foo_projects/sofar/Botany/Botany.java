@@ -432,6 +432,49 @@ nextplant:
 						break;
 					}
 					b.getWorld().generateTree(b.getLocation(), tt);
+				} else if (pm.target_type == Material.SAPLING) {
+					/* Do we need to plant the saplings in a 2x2 fashion? */
+					if ((pm.target_data == 5) || ((pm.target_data == 3) && (Math.random() > 0.9))) {
+						boolean planted_bigtree = false;
+						/* try and find 3 spots next to this location to plant the same saplings */
+						BlockFace[] s = {
+								BlockFace.NORTH, BlockFace.NORTH_EAST, BlockFace.EAST,
+								BlockFace.EAST, BlockFace.SOUTH_EAST, BlockFace.SOUTH,
+								BlockFace.SOUTH, BlockFace.SOUTH_WEST, BlockFace.WEST,
+								BlockFace.WEST, BlockFace.NORTH_WEST, BlockFace.NORTH,
+								BlockFace.NORTH, BlockFace.NORTH_EAST, BlockFace.EAST,
+								BlockFace.EAST, BlockFace.SOUTH_EAST, BlockFace.SOUTH,
+								BlockFace.SOUTH, BlockFace.SOUTH_WEST, BlockFace.WEST
+						};
+
+						Random rnd = new Random();
+						int start = rnd.nextInt(4) * 3;
+						for (int c = start; c < start + 12; c += 3) {
+							if ((b.getRelative(s[c]).getType() == Material.AIR) &&
+								(b.getRelative(s[c]).getRelative(BlockFace.DOWN).getType() == pm.base_type) &&
+								(b.getRelative(s[c + 1]).getType() == Material.AIR) &&
+								(b.getRelative(s[c + 1]).getRelative(BlockFace.DOWN).getType() == pm.base_type) &&
+								(b.getRelative(s[c + 2]).getType() == Material.AIR) &&
+								(b.getRelative(s[c + 2]).getRelative(BlockFace.DOWN).getType() == pm.base_type)) {
+									b.getRelative(s[c]).setType(pm.target_type);
+									setData(b.getRelative(s[c]), pm.target_data);
+									b.getRelative(s[c + 1]).setType(pm.target_type);
+									setData(b.getRelative(s[c + 1]), pm.target_data);
+									b.getRelative(s[c + 2]).setType(pm.target_type);
+									setData(b.getRelative(s[c + 2]), pm.target_data);
+									planted_bigtree = true;
+									break;
+								}
+						}
+
+						/* It's ok if jungle trees don't grow large, but remove any dark oak saplings */
+						if ((!planted_bigtree) && (pm.target_data == 5)) {
+							b.setType(Material.AIR);
+							setData(base, (byte)0);
+							/* don't increment counters */
+							return;
+						}
+					}
 				}
 
 				if (stat_planted.get(pm.target_type.toString() + ":" + pm.target_data) == null)
