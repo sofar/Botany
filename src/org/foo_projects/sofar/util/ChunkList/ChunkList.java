@@ -132,7 +132,9 @@ public class ChunkList {
 
 	public Boolean isLoadedLongerThan(Chunk c, long nanosec) {
 		String key = "(" + c.getWorld().getName() + ":" + c.getX() + "," + c.getZ() + ")";
-		return (System.nanoTime() - chunkMap.get(key) > nanosec);
+		if (chunkMap.containsKey(key))
+			return (System.nanoTime() - chunkMap.get(key) > nanosec);
+		return false;
 	}
 
 	public Boolean isLoadedLongerThan(Location l, long nanosec) {
