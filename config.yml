@@ -5,5 +5,9 @@ saplings: true
 cacti: true
 trees: false
 protect: true
+protect_factions: true
+protect_towny: true
+protect_worldguard: true
+protect_residence: true
 worlds:
 - world

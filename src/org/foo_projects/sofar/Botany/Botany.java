@@ -61,6 +61,11 @@ public final class Botany extends JavaPlugin {
 	private boolean have_worldguard = false;
 	private boolean have_residence = false;
 
+	private boolean conf_factions = true;
+	private boolean conf_towny = true;
+	private boolean conf_worldguard = true;
+	private boolean conf_residence = true;
+
 	private Map<String, Long> stat_planted = new HashMap<String, Long>();
 
 	private ChunkList chunkList;
@@ -205,28 +210,28 @@ public final class Botany extends JavaPlugin {
 		if (!conf_protect)
 			return false;
 
-		if (have_factions_old) {
+		if (have_factions_old && conf_factions) {
 			com.massivecraft.factions.Faction faction = com.massivecraft.factions.Board.getFactionAt(new com.massivecraft.factions.FLocation(block));
 			if (!faction.isNone())
 				return true;
 		}
-		if (have_factions) {
+		if (have_factions && conf_factions) {
 			Faction faction = BoardColls.get().getFactionAt(PS.valueOf(block.getLocation()));
 			if (!faction.isNone())
 				return true;
 		}
-		if (have_towny) {
+		if (have_towny && conf_towny) {
 			if (TownyUniverse.getTownBlock(block.getLocation()) != null)
 				return true;
 		}
-		if (have_worldguard) {
+		if (have_worldguard && conf_worldguard) {
 			RegionManager rm = WGBukkit.getRegionManager(block.getWorld());
 			if (rm == null)
 				return false;
 			ApplicableRegionSet set = rm.getApplicableRegions(block.getLocation());
 			return (set.size() > 0);
 		}
-		if (have_residence) {
+		if (have_residence && conf_residence) {
 			ClaimedResidence res = Residence.getResidenceManager().getByLoc(block.getLocation());
 			if (res != null)
 				return true;
@@ -715,6 +720,11 @@ command:
 		conf_saplings = getConfig().getBoolean("saplings");
 		conf_cacti = getConfig().getBoolean("cacti");
 		conf_trees = getConfig().getBoolean("trees");
+
+		conf_factions = getConfig().getBoolean("protect_factions");
+		conf_towny = getConfig().getBoolean("protect_towny");
+		conf_worldguard = getConfig().getBoolean("protect_worldguard");
+		conf_residence = getConfig().getBoolean("protect_residence");
 
 		getLogger().info("blocks: " + conf_blocks + " ticks: " + conf_ticks + " density: " + conf_density);
 
