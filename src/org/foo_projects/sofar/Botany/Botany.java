@@ -791,17 +791,17 @@ command:
 				if (split.length == 1)
 					continue;
 
-				if (split.length != 5) {
-					getLogger().info("Error parsing plants.csv at line " + lineno);
-					continue;
-				}
-
-				if (split[0].equals("VERSION")) {
+				if ((split.length >= 2) && (split[0].equals("VERSION"))) {
 					if (!split[1].equals(String.valueOf(conf_plants_csv_version))) {
 						getLogger().info("The file \"plants.csv\" in the plugins folder is an outdated version");
 						getLogger().info("Either remove the file and let the plugin install a new version for you, or");
 						getLogger().info("fix it up manually.");
 					}
+					continue;
+				}
+
+				if (split.length != 5) {
+					getLogger().info("Error parsing plants.csv at line " + lineno);
 					continue;
 				}
 
