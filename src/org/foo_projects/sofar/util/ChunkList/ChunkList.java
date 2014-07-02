@@ -144,9 +144,13 @@ public class ChunkList {
 	public Chunk getRandom(World w) {
 		if (!isEnabled(w))
 			return null;
+		
+		int n = w.getLoadedChunks().length;
+		if (n <= 0)
+			return null;
 
 		Random rnd = new Random();
-		return w.getLoadedChunks()[rnd.nextInt(w.getLoadedChunks().length)];
+		return w.getLoadedChunks()[rnd.nextInt(n)];
 	}
 
 	private class ChunkListener implements Listener {
