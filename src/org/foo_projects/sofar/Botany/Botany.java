@@ -500,6 +500,8 @@ nextplant:
 			for (World w: chunkList.listWorlds()) {
 				for (int j = 0; j < conf_blocks; j++) {
 					Chunk c = chunkList.getRandom(w);
+					if (c == null)
+						continue;
 					Random rnd = new Random();
 					int x = rnd.nextInt(16);
 					int z = rnd.nextInt(16);

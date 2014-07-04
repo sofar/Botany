@@ -1,6 +1,6 @@
 name: Botany
 main: org.foo_projects.sofar.Botany.Botany
-version: 9
+version: 10
 softdepend: [Factions, Towny, WorldGuard, Residence]
 commands:
     botany:
