@@ -280,6 +280,11 @@ public final class Botany extends JavaPlugin {
 			b = b.getRelative(BlockFace.DOWN);
 			canopy = true;
 		}
+		
+		/* do not replace leaves on the ground */
+		if (canopy && b.getType() != Material.AIR) {
+			return;
+		}
 
 nextplant:
 		for (plantMatrix pm: pml) {
